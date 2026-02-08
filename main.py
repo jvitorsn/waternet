@@ -14,10 +14,7 @@ import cv2
 import numpy as np
 from rosbags.rosbag1 import Reader
 from rosbags.typesys import get_typestore, Stores
-typestore = get_typestore(Stores.ROS1)
-
-from rosbags.rosbag1 import Reader
-# from rosbags.serde import deserialize_cdr # This line is incorrect
+typestore = get_typestore(Stores.ROS1_NOETIC)
 
 def extract_sensor_data(
     bag_path: Path,
@@ -41,16 +38,18 @@ def extract_sensor_data(
     with Reader(bag_path) as reader:
         # Filter connections by topic
         connections = [
-            conn for conn in reader.connections
-            if conn.topic in sensor_topics
+            conn.topic for conn in reader.connections
+            #if conn.topic in sensor_topics
         ]
         
+        return connections
+    
         # Read messages
         for connection, timestamp, rawdata in reader.messages(
             connections=connections
         ):
-            msg = deserialize_cdr(rawdata, connection.msgtype)
-            
+            msg = typestore.deserialize_ros1(rawdata, connection.msgtype)
+
             # Extract fields recursively
             record = {'timestamp': timestamp}
             record.update(_flatten_message(msg))
@@ -105,8 +104,8 @@ def extract_video_frames(
             if frame_count % frame_skip != 0:
                 frame_count += 1
                 continue
-                
-            msg = deserialize_cdr(rawdata, connection.msgtype)
+            
+            msg = typestore.deserialize_ros1(rawdata, connection.msgtype) 
             
             # Convert ROS image to numpy array
             if msg.encoding == 'rgb8':
@@ -167,24 +166,19 @@ def _flatten_message(msg: Any, prefix: str = '') -> Dict[str, Any]:
             
     return result
 
-def readMsg(bagpath):
-    with Reader(bagpath) as reader:
-        # Ensure custom message types are registered if necessary (not always needed for core types)
-        # reader.connections contain message definitions which can be registered if needed.
-        for connection, timestamp, rawdata in reader.messages():
-            # Use the typestore to deserialize the raw data
-            msg = typestore.deserialize_ros1(rawdata, connection.msgtype) 
-            # For ROS2 bags, you would use typestore.deserialize_cdr()
+def dictToJSON(input_dict: dict, output_path: str) -> dict:
+    import json
 
-            print(msg)
+    # Write the dictionary to a text file (using a .json extension is common)
+    output_path = Path.joinpath(output_path, 'topics.json')
+    with open(output_path, 'w') as json_file:
+        json.dump(input_dict, json_file, indent=4)
 
 
 if __name__ == '__main__':
     # Configuration
     BAG_PATH = Path('./samples/_2022-04-27-16-10-55-002.bag')
     OUTPUT_DIR = Path('extracted_data')
-    
-    readMsg(BAG_PATH)
 
     # Extract sensor data
     SENSOR_TOPICS = [
@@ -192,10 +186,12 @@ if __name__ == '__main__':
         '/gps/fix',
         '/odom',
     ]
-    sensor_data = extract_sensor_data(BAG_PATH, SENSOR_TOPICS, OUTPUT_DIR / 'sensors')
-    print(sensor_data.keys())
 
-    if None:
+    sensor_data = extract_sensor_data(BAG_PATH, SENSOR_TOPICS, OUTPUT_DIR / 'sensors')
+    sensor_keys = dict(zip([i for i in range(len(sensor_data))], sensor_data))
+    dictToJSON(sensor_keys, OUTPUT_DIR)
+
+    if False:
         # Extract video frames
         IMAGE_TOPIC = '/camera/image_raw'
         extract_video_frames(
