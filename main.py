@@ -14,6 +14,7 @@ import cv2
 import numpy as np
 from rosbags.rosbag1 import Reader
 from rosbags.typesys import get_typestore, Stores
+
 typestore = get_typestore(Stores.ROS1_NOETIC)
 
 def extract_sensor_data(
@@ -38,12 +39,10 @@ def extract_sensor_data(
     with Reader(bag_path) as reader:
         # Filter connections by topic
         connections = [
-            conn.topic for conn in reader.connections
-            #if conn.topic in sensor_topics
+            conn for conn in reader.connections
+            if conn.topic in sensor_topics
         ]
         
-        return connections
-    
         # Read messages
         for connection, timestamp, rawdata in reader.messages(
             connections=connections
@@ -73,7 +72,6 @@ def writeCSV(
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows(records)
-
 
 def extract_video_frames(
     bag_path: Path,
@@ -105,8 +103,10 @@ def extract_video_frames(
                 frame_count += 1
                 continue
             
-            msg = typestore.deserialize_ros1(rawdata, connection.msgtype) 
-            
+            msg = typestore.deserialize_ros1(rawdata, connection.msgtype)
+            #debugImage(msg.data)
+            print(help(msg))
+
             # Convert ROS image to numpy array
             if msg.encoding == 'rgb8':
                 image = np.frombuffer(msg.data, dtype=np.uint8).reshape(
@@ -130,6 +130,96 @@ def extract_video_frames(
             frame_path = output_dir / f"frame_{frame_count:06d}.png"
             cv2.imwrite(str(frame_path), image)
             frame_count += 1
+
+def debugTopicData(
+    output_dir: str,
+    bag_path:str,
+    input_list: list) -> None:
+    
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    with Reader(bag_path) as reader:
+        connections = [
+            conn for conn in reader.connections
+            if conn.topic in input_list
+        ]
+        
+        for connection, timestamp, rawdata in reader.messages(
+            connections=connections, start=0, stop=0
+        ):            
+            msg = typestore.deserialize_ros1(rawdata, connection.msgtype)
+            print("topic: ", connection.topic)
+            print(help(msg))
+            
+def compressionType(
+    bag_path:str,
+    topic: str) -> str:
+    """ 
+    Extract compression encoding from image_raw/uncompressed topics
+    
+    Args:
+        bag_path: Path to the ROS bag file.
+        topic: Topic name for messages of image_raw/uncompressed type.
+        
+    Returns:
+        encoding (str): str containing compression encoding type
+    """
+    with Reader(bag_path) as reader:
+        # isolate the desired topic to parse
+        connections = [
+            conn for conn in reader.connections
+            if conn.topic == topic
+        ]
+        
+        for connection, timestamp, rawdata in reader.messages(
+            connections=connections, start=0, stop=0
+        ):            
+            msg = typestore.deserialize_ros1(rawdata, connection.msgtype)
+            format = msg.format
+            break # reader.messages doesn't break to stop argument
+    
+    return format
+
+def extractFrame(
+    bag_path:str,
+    topic: str) -> tuple[
+        int, 
+        int, 
+        np.ndarray, 
+        np.ndarray, 
+        np.ndarray, 
+        np.ndarray
+        ]:
+    """ 
+    Extract image shape from /camera_info topics
+    
+    Args:
+        bag_path: Path to the ROS bag file.
+        topic: Topic name for messages of /camera_info type.
+        
+    Returns:
+        width, height, channels (tuple[int, int, int]): frame dimmensions 
+    """
+    with Reader(bag_path) as reader:
+        # isolate the desired topic to parse
+        connections = [
+            conn for conn in reader.connections
+            if conn.topic == topic
+        ]
+        
+        for connection, timestamp, rawdata in reader.messages(
+            connections=connections, start=0, stop=0
+        ):            
+            msg = typestore.deserialize_ros1(rawdata, connection.msgtype)
+            width = msg.width
+            height = msg.height
+            D = msg.D
+            K = msg.K
+            R = msg.R
+            P = msg.P
+            break # reader.messages doesn't break to stop argument
+    
+    return (width, height, D, K, R, P)
 
 
 def _flatten_message(msg: Any, prefix: str = '') -> Dict[str, Any]:
@@ -187,18 +277,36 @@ if __name__ == '__main__':
         '/odom',
     ]
 
-    sensor_data = extract_sensor_data(BAG_PATH, SENSOR_TOPICS, OUTPUT_DIR / 'sensors')
-    sensor_keys = dict(zip([i for i in range(len(sensor_data))], sensor_data))
-    dictToJSON(sensor_keys, OUTPUT_DIR)
+    compression = compressionType(
+        BAG_PATH, 
+        "/pylon_camera_node/image_raw/compressed"
+    )
+
+    frame = extractFrame( 
+        BAG_PATH, 
+        "/pylon_camera_node/camera_info"
+    )
+
+    print(frame[0:2])
 
     if False:
-        # Extract video frames
-        IMAGE_TOPIC = '/camera/image_raw'
-        extract_video_frames(
-            BAG_PATH,
-            IMAGE_TOPIC,
-            OUTPUT_DIR / 'frames',
-            frame_skip=5,  # Extract every 5th frame
+        IMAGE_TOPICS = [
+        #"/pylon_camera_node/status",
+        "/pylon_camera_node/camera_info",
+        #"/pylon_camera_node/currentParams",
+        "/pylon_camera_node/image_raw/compressed",
+        #"/pylon_camera_node/image_raw/compressed/parameter_updates",
+        #"/pylon_camera_node/image_raw/compressed/parameter_descriptions",
+        #"/pylon_camera_node/grab_images_raw/status",
+        #"/pylon_camera_node/grab_images_rect",
+        #"/pylon_camera_node/grab_images_rect/status"
+        ]
+
+
+        debugTopicData(
+            output_dir=OUTPUT_DIR, 
+            bag_path=BAG_PATH, 
+            input_list=IMAGE_TOPICS
         )
-    
-    print(f"Extraction complete. Data saved to {OUTPUT_DIR}")
+        
+        print(f"Extraction complete. Data saved to {OUTPUT_DIR}")
