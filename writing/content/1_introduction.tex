@@ -1,0 +1,46 @@
+\section{INTRODUCTION}
+
+\subsection{Problem Description}
+Knowing the flight altitude is essential for the operation of air vehicles, including the lightest and simplest quadrotors. This estimation is commonly performed by a set of sensors capable of combining their particularities and redundancies in mathematical filters, offering a reliable measurement of such important data.
+
+To achieve safe flights, in addition to the other measurement needs, the terrain and weather conditions must be compatible with the vehicle and its sensor and actuator peripherals. Thus, even the best of sensors for a given application may be insufficient, and even unable to provide reliable data under certain conditions in another application.
+
+Traditionally, altitude estimation of flight controls are fed by fusing a few or several sensors of LIDAR, ultrasonic, UVDAR, stereo imaging, barometer, and classical vision algorithms with dimension comparison of known structures.
+All these methods are robust and reliable, but lack the capacity of dealing with the water problem.
+
+Some terrain is very challenging for the methods described above, making it impractical for UAVs to operate in these conditions. Among the surfaces with these particularities is water, which due to its constantly disturbed and changing surface does not return reliable data for ultrasound sensors. Moreover, the disturbances coupled with the reflective surface, cannot be measured by light-based sensors such as LIDAR, UVDAR, and infrared. The other common option, based on barometers, malfunctions due to the high density changes of the air masses and evaporation.
+
+With the growing range of possibilities provided by real-time image processing technologies, we are following a phenomenon observed in almost all advancing technologies: the application of machine learning approaches with traditional sensor captures, assisting, complementing, and even replacing classical numerical methods \cite{CivilSurvey}. 
+The challenges encountered for very specific applications, such as the one dealt with in this work, demand the survey of methods that are initially unorthodox, often with ramifications in other areas.
+Thus, it requires a deeper understanding of the reasons that make the surfaces studied unsuitable for measurements performed with current equipment and methods.
+
+    \subsection{Objectives}
+    
+    The main objective of this work is to propose a solution for image-based height sensing over water for use in UAVs. The secondary objectives are:
+    
+    \begin{itemize}
+	    \item Photorealistic water modeling 
+	    \item Creation of a database with synthetic images of the water surface
+	    \item Building an initial real-world database for comparisons
+	    \item Training and evaluation of a CNN system to achieve the primary goal
+	\end{itemize}
+
+
+    \subsection{Hypothesis}
+    The hypothesis is that in the way that humans can identify surface proximity only visually, so too can a machine learn from machine learning techniques. For this very reason, synthetic images should be recognizable by humans as water, and visibly exhibit feature discrepancies depending on the rendering height.
+
+    If such a hypothesis proves to be true, such a system can be embedded in UAVs, improved and expanded to other areas not necessarily related to mobile robotics, such as oceanography.
+
+    \subsection{Structure of This Work}
+    
+    In chapter 2 is a brief description of the main methods used in the paper, divided between the explanations of neural networks in subsection 2.1, and the summary of height estimation and sensors in subsection 2.2.
+    
+    The related works are in chapter 3, with a brief review of the most influential works in this area of computer vision and height estimation. In addition to other articles and book chapters used to support decision making and explain phenomena, regarding differences in the water at each possible location.
+    
+    For the sake of an intuitive approach, Chapter 4 is divided into three main stages, and other three stages to complement the explanations. Being the first one delimited by the generation of synthetic images of water with the 3D modeling software Blender and processed with OpenCV for data conditioning, described in subsection 4.1.
+    Subsection 4.2 and 4.3 describes the capture of the real database, with the specifications of the equipment, particularities of the measurement site, and the normalization of the data. Samples of the captured and processed images are also presented. 
+    In subsection 4.4 is the description of the computational platform, with hardware and software specifications. Followed by the presentation of the architecture in 4.5, with details on activators and parameters. Finally, in subsection 4.6, the optimizers used for the fitting steps are described.
+    
+    The results are discussed in chapter 5, with graphs and information about the model's efficiency in benchmarking the first bank, entirely synthetic used for training, as well as the estimation of the real images. There is also a comparison of the optimizers used.
+    
+    In chapter 6 is the work planning for the next few months, with a likely schedule for execution and a description of the tasks.

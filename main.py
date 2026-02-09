@@ -10,12 +10,14 @@ from pathlib import Path
 from typing import Dict, List, Any
 import csv
 
-import cv2
-import numpy as np
 from rosbags.rosbag1 import Reader
 from rosbags.typesys import get_typestore, Stores
 
 typestore = get_typestore(Stores.ROS1_NOETIC)
+
+import cv2
+import numpy as np
+#from cv_bridge import CvBridge, CvBridgeError
 
 def extract_sensor_data(
     bag_path: Path,
@@ -150,20 +152,26 @@ def debugTopicData(
             msg = typestore.deserialize_ros1(rawdata, connection.msgtype)
             print("topic: ", connection.topic)
             print(help(msg))
-            
-def compressionType(
+            break
+
+def extractFrame(
     bag_path:str,
-    topic: str) -> str:
+    topic: str,
+    singleframe: bool = True) -> tuple[np.ndarray, str]:
     """ 
-    Extract compression encoding from image_raw/uncompressed topics
+    Extract frame raw data and compression encoding from image_raw/compressed topics
     
     Args:
         bag_path: Path to the ROS bag file.
-        topic: Topic name for messages of image_raw/uncompressed type.
+        topic: Topic name for messages of image_raw/compressed type.
+        singleframe: Return just the first frame. Enabled by default.
         
     Returns:
+        raw frame (np.ndarray): raw data in numpy arrat data type
         encoding (str): str containing compression encoding type
     """
+    counter = 0
+
     with Reader(bag_path) as reader:
         # isolate the desired topic to parse
         connections = [
@@ -176,11 +184,43 @@ def compressionType(
         ):            
             msg = typestore.deserialize_ros1(rawdata, connection.msgtype)
             format = msg.format
-            break # reader.messages doesn't break to stop argument
-    
-    return format
+            data = msg.data
+            print(f"data type: {type(data)}")
 
-def extractFrame(
+            if singleframe:
+                break # reader.messages doesn't break to stop argument    
+
+    return (format, data)
+
+def convertFrame(
+    data: np.ndarray,
+    height: int,
+    width: int) -> np.ndarray:
+
+    buf = np.ndarray(shape=(1, len(data)),
+                        dtype=np.uint8, buffer=data)
+    im = cv2.imdecode(buf, cv2.IMREAD_UNCHANGED)
+
+    print(f"image format: {im.shape}")
+    
+    im = cv2.cvtColor(im, )
+    print(f"image format: {image.shape}")
+    #.reshape(height, width)
+
+    return image
+    
+    if False:
+        bridge = CvBridge()
+        cv_image = np.zeros(0)
+        try:
+            # Convert bggr8 to bgr8
+            cv_image = bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
+        except CvBridgeError as e:
+            print(e)
+
+        return cv_image
+
+def extractCameraInfo(
     bag_path:str,
     topic: str) -> tuple[
         int, 
@@ -188,17 +228,23 @@ def extractFrame(
         np.ndarray, 
         np.ndarray, 
         np.ndarray, 
-        np.ndarray
+        np.ndarray,
+        int,
+        int
         ]:
     """ 
-    Extract image shape from /camera_info topics
+    Extract image shape and meta information for a camera from /camera_info topics.
+    D, K, R, P are transformation matrices explained in: 
+    https://docs.ros.org/en/noetic/api/sensor_msgs/html/msg/CameraInfo.html
     
     Args:
         bag_path: Path to the ROS bag file.
         topic: Topic name for messages of /camera_info type.
         
     Returns:
-        width, height, channels (tuple[int, int, int]): frame dimmensions 
+        width, height, D, K, R, P (tuple[int, int, np.ndarray, np.ndarray, np.ndarray]): frame dimmensions and transformation matrices
+        binning_x (int): frame x offset
+        binning_y (int): frame y offset
     """
     with Reader(bag_path) as reader:
         # isolate the desired topic to parse
@@ -217,9 +263,12 @@ def extractFrame(
             K = msg.K
             R = msg.R
             P = msg.P
+            bin_x = msg.binning_x
+            bin_y = msg.binning_y
+            
             break # reader.messages doesn't break to stop argument
     
-    return (width, height, D, K, R, P)
+    return (width, height, D, K, R, P, bin_x, bin_y)
 
 
 def _flatten_message(msg: Any, prefix: str = '') -> Dict[str, Any]:
@@ -270,24 +319,34 @@ if __name__ == '__main__':
     BAG_PATH = Path('./samples/_2022-04-27-16-10-55-002.bag')
     OUTPUT_DIR = Path('extracted_data')
 
+    PYLON_CAM_INFO = "/pylon_camera_node/camera_info"
+    PYLON_CAM_RAW = "/pylon_camera_node/image_raw/compressed"
+
+    BLUEFOX_CAM_INFO = "/uav62/rgbd/color/camera_info"
+    BLUEFOX_CAM_RAW = "/uav62/rgbd/color/image_raw/compressed"
+
     # Extract sensor data
-    SENSOR_TOPICS = [
-        '/imu/data',
-        '/gps/fix',
-        '/odom',
-    ]
-
-    compression = compressionType(
-        BAG_PATH, 
-        "/pylon_camera_node/image_raw/compressed"
+    debugTopicData(
+        output_dir=OUTPUT_DIR, 
+        bag_path=BAG_PATH, 
+        input_list=BLUEFOX_CAM_INFO
     )
 
-    frame = extractFrame( 
-        BAG_PATH, 
-        "/pylon_camera_node/camera_info"
+    frame_info = extractCameraInfo( 
+        BAG_PATH,
+        BLUEFOX_CAM_INFO      
+    )
+    print(f"shape: {frame_info[0:2]}")
+    print(f"bins: {frame_info[-2:]}")
+
+    frame_data = extractFrame(
+        bag_path=BAG_PATH, 
+        topic=BLUEFOX_CAM_RAW,
+        singleframe=True
     )
 
-    print(frame[0:2])
+    image = convertFrame(frame_data[1], frame_info[1], frame_info[0])
+    cv2.imwrite('image.png', image)
 
     if False:
         IMAGE_TOPICS = [

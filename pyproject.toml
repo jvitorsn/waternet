@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "bagpy>=0.5",
     "cv-bridge>=1.13.0.post0",
     "opencv-python>=4.13.0.92",
     "pandas>=3.0.0",
