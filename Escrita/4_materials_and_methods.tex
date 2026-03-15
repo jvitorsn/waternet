@@ -1,0 +1,264 @@
+\section{MATERIALS AND METHODS}
+
+\subsection{Artificial Dataset Synthesis}
+    The strategy of generating the bank synthetically, or altering real images with synthetic elements, is commonly present in works with scarce availability of images.
+    It makes more flexible the conditioning of the objects of study in image processing, from pre-processing to the fine-tuning of hyperparameters in CNN training \cite{BlenderSmoke} \cite{BlurFiducial} \cite{ObjetoSintetico}. 
+    It is also possible to create the whole picture in a photorealistic manner, with the possibility of changing capture angles, lighting direction with color and intensity control
+    In addition, we can also add shadows and other montages, among other particularities depending on the study and application, presenting satisfactory results with accuracy proven by referenced works. \cite{TurbineBlur} \cite{BlenderMapa}.
+
+	An image bank was created in Blender, with samples in Fig. \ref{fig:rgb}, using a photo realistic model of the water surface simulating a fluid behavior without large waves, as found in engulfments, lakes and large dams.
+	
+	To achieve this, the method used to generate the photo realistic water images was based on the application of a time-varying three-dimensional noise generation algorithm to model the waves of a surface \cite{OndaR} \cite{OndaDeep}. 
+	
+	Initially, the color of the light on environment was considered an issue, and the illumination was programmed to simulate the sun, with an inbuilt filter in Blender.
+	
+	The images were rendered at different heights, covering distances of 50, 60, 70, 80, 90, 100, 120, 140, 160, 180, 200, 240, 280, 320, 360, 400, 480, 560, 640, 720, 800 centimeters, with 9,000 images each.
+	
+	Using this bank, pre-processing was performed in OpenCV for three steps:
+	\begin{itemize}
+	    \item Motion blur, to simulate moving 90° (front), 45° (diagonal) captures and rotation on its own axis (YAW movement);
+	    \item  Gaussian blur, with distortions found in camera focus and moisture on lens;
+    	\item Isolation of the value channel in the HSV color system, to decrease the variability inserted by cloud shadows and water color differences found in real captures, and increase the system's immunity to color variations.
+	\end{itemize}
+	
+	\begin{figure}[!h]
+        \centering 
+        \includegraphics[width=15cm]{Images/rgb.png}
+        \caption{Synthetic RGB images. Description available on labels.}
+        \label{fig:rgb}
+    \end{figure}
+    
+    For the first two steps, the average of the colors on the surface of a real engulfment was extracted by Gaussian distribution, with calibrated images of a sea shore. 
+    Such synthetic images were manipulated with distortions common to a regular quadrotor operation, to simulate the desired scenario \cite{YawBlur} \cite{MotionBlur} \cite{SynthBlurDeblur}.
+
+    After finding that changes in water coloration, depending on the local biome, minerals present, and pollution \cite{ColorTurb}, could interfere with the increment of resources unnecessary to the purpose, it was decided to treat it with the conversion from RGB to HSV, and the consequent isolation of the V channel, removing unnecessary tone and saturation information.
+    This composes the third and last step of post processing image manipulation.
+    
+    The whole routine was written in C++ with OpenCV library, and the process flow diagram is depicted in Fig. \ref{fig:flow}
+
+	\begin{figure}[h]
+        \centering 
+        \includegraphics[width=7cm]{Images/flow.jpg}
+        \caption{Preprocessing Flowchart}
+        \label{fig:flow}
+    \end{figure}
+	
+	In the end, 189,000 images were generated, post-processed into equal parts distributions with different deformity intensity degrees, individually documented in a database containing discretization by distance, motion blur direction, motion blur intensity and Gaussian blur intensity, shown in \ref{tabela_imagens}. 
+	This method was preferred to have control of the type of distortion at each step of the process, and to allow isolation of features for point experiments, rather than using the available and less customizable effects of the data augmentation functions in Keras, and also because of the relatively large set of images, decreasing the possible 'cold posterior effects' \cite{BadData}.
+	In Fig. \ref{fig:v} are illustrated examples of images post processed by this script without distortion, and in Fig. \ref{fig:dist} is shown with distortion of different intensities. 
+	The preprocessing flowchart diagrammed in Fig \ref{fig:flow}.
+	
+	    \begin{table}[htbp]
+    \caption{Preprocessing distribution for each height set of synthetic generated images}
+        \begin{center}
+            \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{50cm to 800cm sets} & \textbf{No gaussian blur} & \textbf{Gaussian blur} \\
+            \hline
+            No motion blur & 1500 & 1500 \\
+            \hline
+            Single axis motion blur & 1500 & 1500 \\
+            \hline
+            Diagonal motion blur & 1500 & 1500 \\
+            \hline
+            \end{tabular}
+        \label{tabela_imagens}
+        \end{center}
+    \end{table}
+    
+    \begin{figure}[!h]
+        \centering 
+        \includegraphics[width=15cm]{Images/samples_std.png}
+        \caption{Samples of synthetic images with V channel isolation at 80cm, 400cm and 800cm. No blurring of any kind was applied.}
+        \label{fig:v}
+    \end{figure}
+    
+    \begin{figure}[!h]
+        \centering 
+        \includegraphics[width=15cm]{Images/samples_motion.png}
+        \caption{Samples of synthetic images with V channel isolation at 80cm. Different intensities of motion blur was applied.}
+        \label{fig:dist}
+    \end{figure}
+	
+	\subsection{Real Dataset Capturing}
+	To capture the real images, was used a RealSense D455 camera on a 3-meter extension pole.
+	Videos were recorded in 680x480 pixels resolution at 30 frames per second in .avi format in Microsoft Video 1 codec. 
+	In Fig. \ref{fig:local} are the capture spots in the city of Cabedelo - PB. One of the points is free of nearby structures, on a breakwater.
+	The place is a riverbank with about 1.5Km of distance between the edges and average depth of 1.5 to 3m at the measurement sites. 
+	The other point, further south, is on a dike.
+	At the time of the capture, tide was marking a height of 3.3m, with depth markings on the foundation pillars structure, used to guide our measures.
+	
+	\begin{figure}[!h]
+        \centering 
+        \includegraphics[width=12cm]{Images/local.png}
+        \caption{Capture points marked in red in the city of Cabedelo - PB. Source: Airbus, Maxar Technologies, Google Maps, 2024}
+        \label{fig:local}
+    \end{figure}
+	
+	The videos were separated frame by frame, and preprocessed the same steps as in Fig. \ref{fig:flow} from the 'Gaussian Blur' block onward for data augmentation purposes, while also preserving the original images. 
+	All this was done with OpenCV 3.4.14 in C++ compiled by gcc-10, and after separating the images containing too many leaves, gross positional errors, rocks and other structures, two banks were composed.
+	
+	The first bank have 56,531 images, containing captures at 50, 70, 100, 150, 230, 280 and 330cm.
+	Some samples are available in Fig. \ref{fig:dique}, where is notable the interference of a lot of noise inserted by shadows and reflections of environment and equipment.
+	
+	On the second bank, taken at the breakwater, the absence of any structure to fix and elevate the capture position, was balanced with less interference of the shadows. 
+	The capture was harder, with less freedom from proper framing of the water surface, and at that time, the pole was not projected directly on shadow.
+	6,409 images at the heights of 50 and 70cm was acquired at this spot, with samples in Fig. \ref{fig:pedras}.
+	Is possible to see, that even with a higher material quality, at that place some leaves appears on image.
+	
+	\begin{figure}[!h]
+        \centering 
+        \includegraphics[width=15cm]{Images/samples_dike.png}
+        \caption{Samples at the dike. Heights described in label.}
+        \label{fig:dique}
+    \end{figure}
+	
+	\begin{figure}[!h]
+        \centering 
+        \includegraphics[width=15cm]{Images/samples_breakwater_edit.png}
+        \caption{Samples at the breakwater spot. Heights described in label, with leaves marked in red.}
+        \label{fig:pedras}
+    \end{figure}
+	
+	\subsubsection{Capturing Equipment}
+
+    An Intel$^{\circledR}$ RealSense\textsuperscript{TM} D455 camera (Intel Corp.; Santa Clara, CA, USA) with two 720p resolution infrared sensors and one 1 MP RGB sensor was used. 
+    All sensors are of the global shutter type. The computer used in the field has a four-core Intel$^{\circledR}$ Core\textsuperscript{TM} i5-10300H processor at 2.5 GHz, and a maximum clock of 4.5 GHz. 24GB DDR4@2333 MHz RAM and NVIDIA GTX 1650 4 GB GDDR6 GPU. 
+    Images were captured in 30fps video in AVI extension and GPU-based H264 codec, without brightness compensation.
+    
+    To extend the camera to the desired distances and heights, a 1" diameter aluminum rod with a length of 3 meters was made, as shown in Figure , and inside the rod a shielded unbuffered USB 3.1 extension cable was passed, limiting the bandwidth and requiring the resolution to be decreased to 680x480p.
+    
+    \begin{figure}[t!]
+        \centering 
+        \includegraphics[width=12cm]{Images/haste1.jpg}
+        \caption{Capturing water images}
+        \label{fig:haste}
+    \end{figure}
+    
+    \subsection{Training Platform and Synthetic Bench Generation}
+    The machine used in the first stage as the training and rendering platform for the artificial images features an AMD$^{\circledR}$ Ryzen\textsuperscript{TM} 1600 six-core processor overclocked to 3.8GHz, a NVIDIA GTX 970 with GPU base frequency of 1165 MHz up to 1317 MHz, and 4GB GDDR5 7010 MHz memory (NVIDIA Corp.; Santa Clara, CA, USA), dual channel DDR4@2800 MHz 2x8GB RAM (Micron Technology Inc.; Boise City, ID, USA). Ubuntu 18.04 LTS operating system with NVIDIA 481.1 drivers. 
+    Running on this setup, the software environment was Keras 2.4.3 on Tensorflow 2.3.1.
+    
+    After the first trials, the CNN system was loaded in a Google Colab enviroment, using TensorFlow 2.8.2.
+    This was done for the flexibility of operation, being able to work remotely and with different GPUs available.
+    
+    In the first attempts, the CNN model was employed for the initial training, validation and testing with just the synthetic images in order to assess whether the fractalization observed in the surface waves would be useful in the recognition process. 
+    The final model, used at this stage for the training used batch size of 6, with maximum duration of 100 epochs, with initial learning rate of 0.01 in ADAGRAD and ADAM \cite{ReconheceFruta} on architecture described in Table \ref{tabela_sumario}.
+    
+
+    \subsection{CNN Architecture}
+    The network was elaborated by ReLU-activated cells in all hidden layers, before feeding a single linearized output according to Table \ref{tabela_sumario}, and showed in \ref{fig:diagrama}. 
+    Due to the boundary nature of textures, the ReLU Eq. activator \ref{ReLU} enables a smooth distinction between image regions given its linear activation \cite{ArtigoRelu}, still preserving such criteria in the application of motion blur and gaussian blur.
+    The size of this trained model is 39,8mb.
+    
+    \begin{table}[htbp]
+    \caption{Architecture Summary}
+        \begin{center}
+            \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{Layer(type)} & \textbf{Output Shape} & \textbf{Param #} \\
+            \hline
+            conv2d\_39 (Conv2D) & (None, 220, 220, 32) & 2432 \\
+            \hline
+            max\_pooling2d\_39 (MaxPooling) & (None, 110, 110, 32) & 0\\
+            \hline
+            conv2d\_40 (Conv2D) & (None, 53, 53, 64) & 51264\\
+            \hline
+            max\_pooling2d\_40 (MaxPooling) & (None, 26, 26, 64) & 0\\
+            \hline
+            conv2d\_41 (Conv2D) & (None, 11, 11, 128) & 204928\\
+            \hline
+            max\_pooling2d\_41 (MaxPooling) & (None, 5, 5, 128) & 0\\
+            \hline
+            conv2d\_42 (Conv2D) & (None, 1, 1, 256) & 819456\\
+            \hline
+            max\_pooling2d\_42 (MaxPooling) & (None, 1, 1, 256) & 0\\
+            \hline
+            flatten\_6 (Flatten) & (None, 256) & 0\\
+            \hline
+            dense\_18 (Dense) & (None, 256) & 65792\\
+            \hline
+            dense\_19 (Dense) & (None, 256) & 65792\\
+            \hline
+            dense_20 (Dense) & (None, 1) & 257\\
+            \hline
+            \end{tabular}
+        \label{tabela_sumario}
+        \end{center}
+    \end{table}
+    
+    \begin{figure}[!h]
+        \centering 
+        \includegraphics[width=5cm]{Images/fig1.png}
+        \caption{CNN architecture diagram (depth layers count are merely illustrative)}
+        \label{fig:diagrama}
+    \end{figure}
+    
+    
+    \begin{equation}
+    f(x) = max(0,x)
+    \label{ReLU}
+    \end{equation}
+    
+    \subsection{Optimizers}    
+    Training performance was compared with two optimization algorithms, based on Descending Gradient Eq. \ref{SGD} for better insight into the impact of using the real and synthesized dataset \cite{OverviewGrad}. 
+    
+     \begin{equation}
+        \theta = \theta - \eta \cdot \nabla_\theta J(\Theta;x^i;y^i)
+        \label{SGD}
+    \end{equation}
+    
+    The optimizers have the role of dictating the pace of training, and achieving convergence. Depending on the results at each epoch, it is possible to evaluate possible problems of overfitting, bottlenecks and stagnation in training.
+
+    Two adaptive optimisers were chosen for the task, ADAM and ADAGRAD, with equations described below. These optimisers have a dynamic learning rate and automate the task of converging the weights and biases of the neural network neurons. Both are based on stochastic gradient descent, but ADAM is the most complete, as it does not have the limitation of decreasing the learning speed indefinitely like ADAGRAD, applying momentum and the limitation in historical value windows of a limited number of epochs, as well as RMSProp (Root Mean Square Propagation).
+
+    In all the tests, the optimisers were programmed for a slow learning rate (starting at 0.001 for ADAM and ADAGRAD). The aim was always to find better metrics, even if this led to longer training sessions. 
+   
+    ADAM:
+    
+    \begin{equation}
+    m_t =\beta_1 * m_{t-1} + (1 - \beta_1) * \nabla_{wt}
+    \label{ADAM1}
+    \end{equation}
+            
+    \begin{equation}
+    b_t =\beta_2 * m_{t-1} + (1 - \beta_2) * (\nabla_{wt})^2
+    \label{ADAM2}
+    \end{equation}
+            
+    \begin{equation}
+    \uvec{m}_t = \frac{m_t}{1-\beta^t_1}
+    \label{ADAM3}
+    \end{equation}
+            
+    \begin{equation}
+    \uvec{v}_t = \frac{m_t}{1-\beta^t_2}
+    \label{ADAM4}
+    \end{equation}
+            
+    \begin{equation}
+    w_{t+1} = w_t - \frac{\eta}{\sqrt{\uvec{v}_t+\epsilon}}*\uvec{m}_t
+    \label{ADAM5}
+    \end{equation}
+    
+    ADAGRAD:
+    
+    \begin{equation}
+    v_t^w = v^w_{t_-1} + (\nabla w_t)^2
+    \label{ADAGRAD1}
+    \end{equation}
+    
+    \begin{equation}
+    w_{t+1} = w_t - \frac{\eta}{\sqrt{v^w_t+\epsilon}}*\nabla w_t
+    \label{ADAGRAD2}
+    \end{equation}
+    
+    \begin{equation}
+    v_b^w = v^b_{t_-1} + (\nabla b_t)^2
+    \label{ADAGRAD3}
+    \end{equation}
+    
+    \begin{equation}
+    b_{t+1} = b_t - \frac{\eta}{\sqrt{v^b_t+\epsilon}}*\nabla b_t 
+    \label{ADAGRAD4}
+    \end{equation}
