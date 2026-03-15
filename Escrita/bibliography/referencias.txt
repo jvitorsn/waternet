@@ -1,0 +1,456 @@
+%
+%@ARTICLE{pernarobo,
+%    author={ {Joon-young Kim} and M. R. {Popovic} and J. K. {Mills}},
+%    journal={IEEE Transactions on Neural Systems and Rehabilitation Engineering}, 
+%    title={Dynamic modeling and torque estimation of FES-assisted arm-free standing for paraplegics}, 
+%    year={2006},
+%    volume={14},
+%    number={1},
+%    pages={46-54},
+%    doi={10.1109/TNSRE.2006.870489}
+%}
+
+@Article{MonocularDepth,
+AUTHOR = {Cui, Xue-Zhi and Feng, Quan and Wang, Shu-Zhi and Zhang, Jian-Hua},
+TITLE = {Monocular Depth Estimation with Self-Supervised Learning for Vineyard Unmanned Agricultural Vehicle},
+JOURNAL = {Sensors},
+VOLUME = {22},
+YEAR = {2022},
+NUMBER = {3},
+ARTICLE-NUMBER = {721},
+URL = {https://www.mdpi.com/1424-8220/22/3/721},
+PubMedID = {35161463},
+ISSN = {1424-8220},
+ABSTRACT = {To find an economical solution to infer the depth of the surrounding environment of unmanned agricultural vehicles (UAV), a lightweight depth estimation model called MonoDA based on a convolutional neural network is proposed. A series of sequential frames from monocular videos are used to train the model. The model is composed of two subnetworks&mdash;the depth estimation subnetwork and the pose estimation subnetwork. The former is a modified version of U-Net that reduces the number of bridges, while the latter takes EfficientNet-B0 as its backbone network to extract the features of sequential frames and predict the pose transformation relations between the frames. The self-supervised strategy is adopted during the training, which means the depth information labels of frames are not needed. Instead, the adjacent frames in the image sequence and the reprojection relation of the pose are used to train the model. Subnetworks&rsquo; outputs (depth map and pose relation) are used to reconstruct the input frame, then a self-supervised loss between the reconstructed input and the original input is calculated. Finally, the loss is employed to update the parameters of the two subnetworks through the backward pass. Several experiments are conducted to evaluate the model&rsquo;s performance, and the results show that MonoDA has competitive accuracy over the KITTI raw dataset as well as our vineyard dataset. Besides, our method also possessed the advantage of non-sensitivity to color. On the computing platform of our UAV&rsquo;s environment perceptual system NVIDIA JETSON TX2, the model could run at 18.92 FPS. To sum up, our approach provides an economical solution for depth estimation by using monocular cameras, which achieves a good trade-off between accuracy and speed and can be used as a novel auxiliary depth detection paradigm for UAVs.},
+DOI = {10.3390/s22030721}
+}
+
+@inproceedings{Joglekar2011DepthEU,
+  title={Depth Estimation Using Monocular Camera},
+  author={Apoorva Joglekar and Devika Joshi and Richa Khemani and Smita Nair and Shashikant Sahare},
+  year={2011}
+}
+
+@misc{OverviewGrad,
+  doi = {10.48550/ARXIV.1609.04747},
+  url = {https://arxiv.org/abs/1609.04747},
+  author = {Ruder, Sebastian},
+  keywords = {Machine Learning (cs.LG), FOS: Computer and information sciences, FOS: Computer and information sciences},
+  title = {An overview of gradient descent optimization algorithms},
+  publisher = {arXiv},
+  year = {2016},
+  copyright = {arXiv.org perpetual, non-exclusive license}
+}
+
+@article{ColorTurb,
+author = {Roland, Fabio and Caraco, Nina F. and Cole, Jonathan J. and del Giorgio, Paul},
+title = {Rapid and precise determination of dissolved oxygen by spectrophotometry: Evaluation of interference from color and turbidity},
+journal = {Limnology and Oceanography},
+volume = {44},
+number = {4},
+pages = {1148-1154},
+doi = {https://doi.org/10.4319/lo.1999.44.4.1148},
+url = {https://aslopubs.onlinelibrary.wiley.com/doi/abs/10.4319/lo.1999.44.4.1148},
+eprint = {https://aslopubs.onlinelibrary.wiley.com/doi/pdf/10.4319/lo.1999.44.4.1148},
+abstract = {Several researchers have proposed spectrophotometric modifications of the Winkler titrimetric method for measuring dissolved oxygen (DO). These modifications, although simple, are not widely used because of concern about accuracy, calibration, and possible sources of interference. Here we show, using natural samples from lakes and rivers as well as samples manipulated in the laboratory, that the spectrophotometric method can provide accurate and very precise measurements of DO over a wide range of concentrations (4 to ∼13 mg O2 liter−1). Further, interference from dissolved organic carbon (color) and turbidity are minor. We propose corrections for both color and turbidity, where necessary, that can be easily incorporated into the measurement design. Because of the speed and simplicity of the spectrophotometric method, it is easy to replicate measurements and thereby increase precision without greatly increasing analytical time. In 10 min of effort, we were able to achieve a coefficient of variation (CV) within one bottle of 0.09\%, or 0.8\% among different bottles. With n = 7 bottles, one can easily distinguish changes in DO of 0.05 mg liter−1 with this method, which makes it useful for metabolic studies in many environments. To achieve a comparable CV by conventional titration would require about 100 min of effort.},
+year = {1999}
+}
+
+@INPROCEEDINGS{ReconheceFruta,
+  author={Ünal, Haci Bayram and Vural, Ebru and Savaş, Burcu Kir and Becerikli, Yaşar},
+  booktitle={2020 Innovations in Intelligent Systems and Applications Conference (ASYU)}, 
+  title={Fruit Recognition and Classification with Deep Learning Support on Embedded System (fruitnet)}, 
+  year={2020},
+  volume={},
+  number={},
+  pages={1-5},
+  doi={10.1109/ASYU50717.2020.9259881}
+}
+
+@misc{ArtigoRelu,
+  doi = {10.48550/ARXIV.1803.08375},
+  url = {https://arxiv.org/abs/1803.08375},
+  author = {Agarap, Abien Fred},
+  keywords = {Neural and Evolutionary Computing (cs.NE), Computer Vision and Pattern Recognition (cs.CV), Machine Learning (cs.LG), Machine Learning (stat.ML), FOS: Computer and information sciences, FOS: Computer and information sciences},
+  title = {Deep Learning using Rectified Linear Units (ReLU)},
+  publisher = {arXiv},
+  year = {2018},
+  copyright = {Creative Commons Attribution Non Commercial Share Alike 4.0 International}
+}
+
+@ARTICLE{OpticalFlowStereo,  
+    author={McGuire, Kimberly and de Croon, Guido and De Wagter, Christophe and Tuyls, Karl and Kappen, Hilbert},  
+    journal={IEEE Robotics and Automation Letters},   
+    title={Efficient Optical Flow and Stereo Vision for Velocity Estimation and Obstacle Avoidance on an Autonomous Pocket Drone},   
+    year={2017},  
+    volume={2},  
+    number={2},  
+    pages={1070-1076},  
+doi={10.1109/LRA.2017.2658940}}
+
+@misc{AircraftColAvoid,
+  doi = {10.48550/ARXIV.1903.00762},
+  url = {https://arxiv.org/abs/1903.00762},
+  author = {Julian, Kyle D. and Sharma, Shivam and Jeannin, Jean-Baptiste and Kochenderfer, Mykel J.},
+  keywords = {Systems and Control (eess.SY), Logic in Computer Science (cs.LO), FOS: Electrical engineering, electronic engineering, information engineering, FOS: Electrical engineering, electronic engineering, information engineering, FOS: Computer and information sciences, FOS: Computer and information sciences},
+  title = {Verifying Aircraft Collision Avoidance Neural Networks Through Linear Approximations of Safe Regions},
+  publisher = {arXiv},
+  year = {2019},
+  copyright = {arXiv.org perpetual, non-exclusive license}
+}
+
+@INPROCEEDINGS{CNNSingleImageQuadrotor,
+  author={Chakravarty, Punarjay and Kelchtermans, Klaas and Roussel, Tom and Wellens, Stijn and Tuytelaars, Tinne and Van Eycken, Luc},
+  booktitle={2017 IEEE International Conference on Robotics and Automation (ICRA)}, 
+  title={CNN-based single image obstacle avoidance on a quadrotor}, 
+  year={2017},
+  volume={},
+  number={},
+  pages={6369-6374},
+  doi={10.1109/ICRA.2017.7989752}
+}
+
+
+@Article{FiltroKalmanAltitude,
+AUTHOR = {Wierzbicki, Damian},
+TITLE = {Multi-Camera Imaging System for UAV Photogrammetry},
+JOURNAL = {Sensors},
+VOLUME = {18},
+YEAR = {2018},
+NUMBER = {8},
+ARTICLE-NUMBER = {2433},
+URL = {https://www.mdpi.com/1424-8220/18/8/2433},
+ISSN = {1424-8220},
+ABSTRACT = {In the last few years, it has been possible to observe a considerable increase in the use of unmanned aerial vehicles (UAV) equipped with compact digital cameras for environment mapping. The next stage in the development of photogrammetry from low altitudes was the development of the imagery data from UAV oblique images. Imagery data was obtained from side-facing directions. As in professional photogrammetric systems, it is possible to record footprints of tree crowns and other forms of the natural environment. The use of a multi-camera system will significantly reduce one of the main UAV photogrammetry limitations (especially in the case of multirotor UAV) which is a reduction of the ground coverage area, while increasing the number of images, increasing the number of flight lines, and reducing the surface imaged during one flight. The approach proposed in this paper is based on using several head cameras to enhance the imaging geometry during one flight of UAV for mapping. As part of the research work, a multi-camera system consisting of several cameras was designed to increase the total Field of View (FOV). Thanks to this, it will be possible to increase the ground coverage area and to acquire image data effectively. The acquired images will be mosaicked in order to limit the total number of images for the mapped area. As part of the research, a set of cameras was calibrated to determine the interior orientation parameters (IOPs). Next, the method of image alignment using the feature image matching algorithms was presented. In the proposed approach, the images are combined in such a way that the final image has a joint centre of projections of component images. The experimental results showed that the proposed solution was reliable and accurate for the mapping purpose. The paper also presents the effectiveness of existing transformation models for images with a large coverage subjected to initial geometric correction due to the influence of distortion.},
+DOI = {10.3390/s18082433}
+}
+
+@ARTICLE{CivilSurvey,
+  author={Shakhatreh, Hazim and Sawalmeh, Ahmad H. and Al-Fuqaha, Ala and Dou, Zuochao and Almaita, Eyad and Khalil, Issa and Othman, Noor Shamsiah and Khreishah, Abdallah and Guizani, Mohsen},
+  journal={IEEE Access}, 
+  title={Unmanned Aerial Vehicles (UAVs): A Survey on Civil Applications and Key Research Challenges}, 
+  year={2019},
+  volume={7},
+  number={},
+  pages={48572-48634},
+  doi={10.1109/ACCESS.2019.2909530}}
+  
+@article{WeatherConstraints,
+  doi = {10.1038/s41598-021-91325-w},
+  url = {https://doi.org/10.1038/s41598-021-91325-w},
+  year = {2021},
+  month = jun,
+  publisher = {Springer Science and Business Media {LLC}},
+  volume = {11},
+  number = {1},
+  author = {Mozhou Gao and Chris H. Hugenholtz and Thomas A. Fox and Maja Kucharczyk and Thomas E. Barchyn and Paul R. Nesbit},
+  title = {Weather constraints on global drone flyability},
+  journal = {Scientific Reports}
+}
+
+@inproceedings{BadData,
+ author = {Noci, Lorenzo and Roth, Kevin and Bachmann, Gregor and Nowozin, Sebastian and Hofmann, Thomas},
+ booktitle = {Advances in Neural Information Processing Systems},
+ editor = {M. Ranzato and A. Beygelzimer and Y. Dauphin and P.S. Liang and J. Wortman Vaughan},
+ pages = {12738--12748},
+ publisher = {Curran Associates, Inc.},
+ title = {Disentangling the Roles of Curation, Data-Augmentation and the Prior in the Cold Posterior Effect},
+ url = {https://proceedings.neurips.cc/paper/2021/file/6a12d7ebc27cae44623468302c47ad74-Paper.pdf},
+ volume = {34},
+ year = {2021}
+}
+
+@article{SynthBlurDeblur,
+  doi = {10.3390/s18092874},
+  url = {https://doi.org/10.3390/s18092874},
+  year = {2018},
+  month = aug,
+  publisher = {{MDPI} {AG}},
+  volume = {18},
+  number = {9},
+  pages = {2874},
+  author = {Ruihua Wang and Guorui Ma and Qianqing Qin and Qiang Shi and Juntao Huang},
+  title = {Blind {UAV} Images Deblurring Based on Discriminative Networks},
+  journal = {Sensors}
+}
+
+@article{BlenderSmoke,
+title = {Wildland Forest Fire Smoke Detection Based on Faster R-CNN using Synthetic Smoke Images},
+journal = {Procedia Engineering},
+volume = {211},
+pages = {441-446},
+year = {2018},
+note = {2017 8th International Conference on Fire Science and Fire Protection Engineering (ICFSFPE 2017)},
+issn = {1877-7058},
+doi = {https://doi.org/10.1016/j.proeng.2017.12.034},
+url = {https://www.sciencedirect.com/science/article/pii/S1877705817362574},
+author = {Qi-xing Zhang and Gao-hua Lin and Yong-ming Zhang and Gao Xu and Jin-jun Wang},
+keywords = {video smoke detection, wildland forest fire smoke, faster R-CNN, deep learning, synthetic smoke image},
+abstract = {In this paper, Faster R-CNN was used to detect wildland forest fire smoke to avoid the complex manually feature extraction process in traditional video smoke detection methods. Synthetic smoke images are produced by inserting real smoke or simulative smoke into forest background to solve the lack of training data. The models trained by the two kinds of synthetic images respectively are tested in dataset consisting of real fire smoke images. The results show that simulative smoke is the better choice and the model is insensitive to thin smoke. It may be possible to further boost the performance by improving the synthetic process of forest fire smoke images or extending this solution to video sequences.}
+}
+
+
+@Article{TurbineBlur,
+AUTHOR = {Peng, Yeping and Tang, Zhen and Zhao, Genping and Cao, Guangzhong and Wu, Chao},
+TITLE = {Motion Blur Removal for Uav-Based Wind Turbine Blade Images Using Synthetic Datasets},
+JOURNAL = {Remote Sensing},
+VOLUME = {14},
+YEAR = {2022},
+NUMBER = {1},
+ARTICLE-NUMBER = {87},
+URL = {https://www.mdpi.com/2072-4292/14/1/87},
+ISSN = {2072-4292},
+ABSTRACT = {Unmanned air vehicle (UAV) based imaging has been an attractive technology to be used for wind turbine blades (WTBs) monitoring. In such applications, image motion blur is a challenging problem which means that motion deblurring is of great significance in the monitoring of running WTBs. However, an embarrassing fact for these applications is the lack of sufficient WTB images, which should include better pairs of sharp images and blurred images captured under the same conditions for network model training. To overcome the challenge of image pair acquisition, a training sample synthesis method is proposed. Sharp images of static WTBs were first captured, and then video sequences were prepared by running WTBs at different speeds. The blurred images were identified from the video sequences and matched to the sharp images using image difference. To expand the sample dataset, rotational motion blurs were simulated on different WTBs. Synthetic image pairs were then produced by fusing sharp images and images of simulated blurs. Finally, a total of 4000 image pairs were obtained. To conduct motion deblurring, a hybrid deblurring network integrated with DeblurGAN and DeblurGANv2 was deployed. The results show that the integration of DeblurGANv2 and Inception-ResNet-v2 provides better deblurred images, in terms of both metrics of signal-to-noise ratio (80.138) and structural similarity (0.950) than those obtained from the comparable networks of DeblurGAN and MobileNet-DeblurGANv2.},
+DOI = {10.3390/rs14010087}
+}
+
+@INPROCEEDINGS{BlurFiducial,
+  author={Prasad, Meghshyam G. and Chandran, Sharat and Brown, Michael S.},
+  booktitle={2015 IEEE Winter Conference on Applications of Computer Vision}, 
+  title={A Motion Blur Resilient Fiducial for Quadcopter Imaging}, 
+  year={2015},
+  volume={},
+  number={},
+  pages={254-261},
+  doi={10.1109/WACV.2015.41}}
+  
+@article{ObjetoSintetico,
+  author    = {Param S. Rajpura and
+               Ravi S. Hegde and
+               Hristo Bojinov},
+  title     = {Object Detection Using Deep CNNs Trained on Synthetic Images},
+  journal   = {CoRR},
+  volume    = {abs/1706.06782},
+  year      = {2017},
+  url       = {http://arxiv.org/abs/1706.06782},
+  eprinttype = {arXiv},
+  eprint    = {1706.06782},
+  timestamp = {Mon, 13 Aug 2018 16:46:29 +0200},
+  biburl    = {https://dblp.org/rec/journals/corr/RajpuraHB17.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@ARTICLE{SurveyObjDetectionTracking,
+  author={Wu, Xin and Li, Wei and Hong, Danfeng and Tao, Ran and Du, Qian},
+  journal={IEEE Geoscience and Remote Sensing Magazine}, 
+  title={Deep Learning for Unmanned Aerial Vehicle-Based Object Detection and Tracking: A survey}, 
+  year={2022},
+  volume={10},
+  number={1},
+  pages={91-124},
+  doi={10.1109/MGRS.2021.3115137}}
+  
+@INPROCEEDINGS{ByMySelf,
+  author={Kouris, Alexandros and Bouganis, Christos-Savvas},
+  booktitle={2018 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)}, 
+  title={Learning to Fly by MySelf: A Self-Supervised CNN-Based Approach for Autonomous Navigation}, 
+  year={2018},
+  volume={},
+  number={},
+  pages={1-9},
+  doi={10.1109/IROS.2018.8594204}}
+
+@article{MobileNetTracking,
+title = {Light-weight UAV object tracking network based on strategy gradient and attention mechanism},
+journal = {Knowledge-Based Systems},
+volume = {224},
+pages = {107071},
+year = {2021},
+issn = {0950-7051},
+doi = {https://doi.org/10.1016/j.knosys.2021.107071},
+url = {https://www.sciencedirect.com/science/article/pii/S0950705121003348},
+author = {Xia Hua and Xinqing Wang and Ting Rui and Faming Shao and Dong Wang},
+keywords = {Computer vision, Object tracking, Attention mechanism, Strategy gradient, Unmanned aerial vehicle},
+abstract = {Most existing object tracking methods have poor adaptability to complex scenes, and cannot achieve a good balance between tracking accuracy and real-time performance. To solve the above problems, this paper proposes a lightweight UAV object real-time tracking algorithm based on strategy gradient and attention. Firstly, a lightweight E-Mobile Net is designed as the backbone network of feature extraction; secondly, a feature enhanced attention assistant module is designed to enhance the adaptability and discrimination ability of the model; with multi-layer feature fusion regional suggestion network, foreground background classification and boundary box regression response map are obtained by cross-correlation, and the tracking results are calculated. The strategy network based on strategy gradient is used to optimize the template update and re detection strategy, which improves the overall tracking accuracy and efficiency of the model. Simulation experiments on an embedded device and multiple standard data sets show that compared with the current mainstream algorithms, the tracking accuracy is significantly improved 20\%∼30\%, the algorithm robustness also has obvious advantages, and the tracking speed on an embedded device is 56 fps can meet the real-time requirements.}
+}
+
+@article{BlenderMapa,
+title = {BIM-PoseNet: Indoor camera localisation using a 3D indoor model and deep learning from synthetic images},
+journal = {ISPRS Journal of Photogrammetry and Remote Sensing},
+volume = {150},
+pages = {245-258},
+year = {2019},
+issn = {0924-2716},
+doi = {https://doi.org/10.1016/j.isprsjprs.2019.02.020},
+url = {https://www.sciencedirect.com/science/article/pii/S0924271619300589},
+author = {Debaditya Acharya and Kourosh Khoshelham and Stephan Winter},
+keywords = {Indoor localisation, Camera pose regression, 3D building models, BIM, Deep learning, Synthetic images},
+abstract = {The ubiquity of cameras built in mobile devices has resulted in a renewed interest in image-based localisation in indoor environments where the global navigation satellite system (GNSS) signals are not available. Existing approaches for indoor localisation using images either require an initial location or need first to perform a 3D reconstruction of the whole environment using structure-from-motion (SfM) methods, which is challenging and time-consuming for large indoor spaces. In this paper, a visual localisation approach is proposed to eliminate the requirement of image-based reconstruction of the indoor environment by using a 3D indoor model. A deep convolutional neural network (DCNN) is fine-tuned using synthetic images obtained from the 3D indoor model to regress the camera pose. Results of the experiments indicate that the proposed approach can be used for indoor localisation in real-time with an accuracy of approximately 2 m.}
+}
+
+@article{OndaR,
+author = {Ferrick, Michael G.},
+title = {Analysis of River Wave Types},
+journal = {Water Resources Research},
+volume = {21},
+number = {2},
+pages = {209-220},
+doi = {https://doi.org/10.1029/WR021i002p00209},
+url = {https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/WR021i002p00209},
+eprint = {https://agupubs.onlinelibrary.wiley.com/doi/pdf/10.1029/WR021i002p00209},
+abstract = {In this paper we consider long-period, shallow-water waves in rivers that are a consequence of unsteady flow. River waves result from hydroelectric power generation or flow control at a dam, the breach of a dam, the formation or release of an ice jam, and rainfall-runoff processes. The Saint-Venant equations are generally used to describe river waves. Dynamic, gravity, diffusion, and kinematic river waves have been defined, each corresponding to different forms of the momentum equation and each applying to some subset of the overall range of river hydraulic properties and time scales of wave motion. However, the parameter ranges corresponding to each wave description are not well defined, and the transitions between wave types have not been explored. This paper is an investigation into these areas, which are fundamental to river wave modeling. The analysis is based on the concept that river wave behavior is determined by the balance between friction and inertia. The Saint-Venant equations are combined to form a system equation that is written in dimensionless form. The dominant terms of the system equation change with the relative magnitudes of a group of dimensionless scaling parameters that quantify the friction-inertia balance. These scaling parameters are continuous, indicating that the various river wave types and the transitions between them form a spectrum. Additional data describing the physical variability of a river and wave are incorporated into the analysis by interpreting the scaling parameters as random variables. This probabilistic interpretation provides an improved estimate of the friction-inertia balance, further insight into the continuous nature of wave transitions, and a measure of the reliability of wave type assessments near a transition. Case studies are used to define the scaling parameter ranges representing each wave type and transition and to provide data with which to evaluate the usefulness of the analysis for general application.},
+year = {1985}
+}
+
+@incollection{OndaDeep,
+title = {Nonlinear Dynamics of Deep-Water Gravity Waves},
+editor = {Chiu-Shun Yih},
+series = {Advances in Applied Mechanics},
+publisher = {Elsevier},
+volume = {22},
+pages = {67-229},
+year = {1982},
+issn = {0065-2156},
+doi = {https://doi.org/10.1016/S0065-2156(08)70066-8},
+url = {https://www.sciencedirect.com/science/article/pii/S0065215608700668},
+author = {Henry C. Yuen and Bruce M. Lake},
+abstract = {Publisher Summary
+This chapter reviews some recent progress in the nonlinear dynamics of deep-water gravity waves. It attempts to highlight the major developments in theory and experiment commencing with the finding by Lighthill (1965) that a nonlinear, deep-water gravity wave train is unstable to modulational perturbation, up to the present investigations of various aspects of nonlinear phenomena, including three-dimensional instabilities, bifurcations into new steady solutions, statistical properties of random wave fields, and chaotic behavior in time evolution. The governing equations for inviscid, irrotational, incompressible, free surface flows are given in Section II of the chapter, together with some basic steady solutions of the system. The concept of a wave train is introduced in Section III. The stability and evolutionary properties of a weakly nonlinear wave train in two dimensions are considered in Section IV, based on the nonlinear Schrodinger equation, which is an equation describing the wave envelope. Some interesting phenomena, such as the existence of envelope solitons, and the Fermi-Pasta-Ulam recurrence in time of an unstable wave train, are examined. Section V extends these results to three dimensions, using the three-dimensional nonlinear Schrodinger equation. The results indicate that whereas the nonlinear Schrodinger equation is remarkably successful in describing the two-dimensional dynamics, it is inadequate for treatment of the three-dimensional case.}
+}
+
+@article{YawBlur,
+  doi = {10.1177/0959651818765027},
+  url = {https://doi.org/10.1177/0959651818765027},
+  year = {2018},
+  month = mar,
+  publisher = {{SAGE} Publications},
+  volume = {232},
+  number = {7},
+  pages = {857--868},
+  author = {Tugrul Oktay and Harun Celik and Ilke Turkmen},
+  title = {Maximizing autonomous performance of fixed-wing unmanned aerial vehicle to reduce motion blur in taken images},
+  journal = {Proceedings of the Institution of Mechanical Engineers,  Part I: Journal of Systems and Control Engineering}
+}
+
+@INPROCEEDINGS{MotionBlur,
+  author={Shengyang Dai and Ying Wu},
+  booktitle={2008 IEEE Conference on Computer Vision and Pattern Recognition}, 
+  title={Motion from blur}, 
+  year={2008},
+  volume={},
+  number={},
+  pages={1-8},
+  doi={10.1109/CVPR.2008.4587582}}
+  
+@incollection{OnboardCNN,
+  doi = {10.1007/978-3-030-49076-8_19},
+  url = {https://doi.org/10.1007/978-3-030-49076-8_19},
+  year = {2020},
+  publisher = {Springer International Publishing},
+  pages = {195--208},
+  author = {A. A. Cabrera-Ponce and J. Martinez-Carranza},
+  title = {Onboard {CNN}-Based Processing for Target Detection and Autonomous Landing for {MAVs}},
+  booktitle = {Lecture Notes in Computer Science}
+}
+
+@article{BatchNormalization,
+  author    = {Tolga Ergen and
+               Arda Sahiner and
+               Batu Ozturkler and
+               John M. Pauly and
+               Morteza Mardani and
+               Mert Pilanci},
+  title     = {Demystifying Batch Normalization in ReLU Networks: Equivalent Convex
+               Optimization Models and Implicit Regularization},
+  journal   = {CoRR},
+  volume    = {abs/2103.01499},
+  year      = {2021},
+  url       = {https://arxiv.org/abs/2103.01499},
+  eprinttype = {arXiv},
+  eprint    = {2103.01499},
+  timestamp = {Thu, 04 Mar 2021 17:00:40 +0100},
+  biburl    = {https://dblp.org/rec/journals/corr/abs-2103-01499.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@ARTICLE{RollingShutter,
+       author = {{Vautherin}, Jonas and {Rutishauser}, Simon and {Schneider-Zapp}, Klaus and {Choi}, Hon Fai and {Chovancova}, Venera and {Glass}, Alexis and {Strecha}, Christoph},
+        title = "{Photogrammetric Accuracy and Modeling of Rolling Shutter Cameras}",
+      journal = {ISPRS Annals of Photogrammetry, Remote Sensing and Spatial Information Sciences},
+         year = 2016,
+        month = jun,
+       volume = {III3},
+        pages = {139-146},
+          doi = {10.5194/isprs-annals-III-3-139-2016},
+       adsurl = {https://ui.adsabs.harvard.edu/abs/2016ISPAnIII3..139V},
+      adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
+
+@misc{LivroNeural,
+  added-at = {2019-01-15T22:46:49.000+0100},
+  author = {Nielsen, Michael A.},
+  biburl = {https://www.bibsonomy.org/bibtex/274383acee84241145ff4ffede9658206/slicside},
+  interhash = {04d527cadd39f888fc3babcad3343362},
+  intrahash = {74383acee84241145ff4ffede9658206},
+  keywords = {ba-2018-hahnrico},
+  publisher = {Determination Press},
+  timestamp = {2019-01-15T22:46:49.000+0100},
+  title = {Neural Networks and Deep Learning},
+  type = {misc},
+  url = {http://neuralnetworksanddeeplearning.com/},
+  year = 2018
+}
+
+@INPROCEEDINGS{AltitudeEstimationFusion,
+    author={Szafranski, Grzegorz and Czyba, Roman and Janusz, Wojciech and Blotnicki, Wojciech},
+    booktitle={2013 International Conference on Unmanned Aircraft Systems (ICUAS)}, 
+    title={Altitude estimation for the UAV's applications based on sensors fusion algorithm}, 
+    year={2013},
+    volume={},
+    number={},
+    pages={508-515},
+    doi={10.1109/ICUAS.2013.6564727}
+}
+
+@article{SensoresFloresta,
+    author = {Wallace, Luke and Lucieer, Arko and Watson, Christopher and Turner, Darren},
+    year = {2012},
+    month = {12},
+    pages = {1519-1543},
+    title = {Development of a UAV-LiDAR System with Application to Forest Inventory},
+    volume = {4},
+    journal = {Remote Sensing},
+    doi = {10.3390/rs4061519}
+}
+
+@ARTICLE{TUAVSensorDNN,
+  author = {Dudukcu, Hatice Vildan and Taskiran, Murat and Kahraman, Nihan},
+  journal = {Engineering Applications of Artificial Intelligence},
+  title = {UAV sensor data applications with deep neural networks: A comprehensive survey},
+  year = {2023},
+  volume = {123},
+  number = {Part C},
+  pages = {106476},
+  doi = {10.1016/j.engappai.2023.106476}
+}
+
+@ARTICLE{UAVCivilAppsJATM,
+  author = {Sivakumar, Mithra and Naga Malleswari, T. Y. J.},
+  journal = {Journal of Aerospace Technology and Management},
+  title = {A Literature Survey of Unmanned Aerial Vehicle Usage for Civil Applications},
+  year = {2021},
+  volume = {13},
+  pages = {1-23},
+  doi = {10.1590/jatm.v13.1233}
+}
+
+@ARTICLE{VIAENetAltitude,
+  author = {Zhang, Xupei and He, Zhanzhuang and Ma, Zhong and Jun, Peng and Yang, Kun},
+  journal = {Sensors},
+  title = {VIAE-Net: An End-to-End Altitude Estimation through Monocular Vision and Inertial Feature Fusion Neural Networks for UAV Autonomous Landing},
+  year = {2021},
+  volume = {21},
+  number = {18},
+  pages = {6302},
+  doi = {10.3390/s21186302}
+}
+
+@misc{WaterDepthSpecular,
+      title={Self-supervised Monocular Depth Estimation on Water Scenes via Specular Reflection Prior}, 
+      author={Zhengyang Lu and Ying Chen},
+      year={2024},
+      eprint={2404.07176},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2404.07176}, 
+}
