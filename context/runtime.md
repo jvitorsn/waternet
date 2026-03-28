@@ -3,10 +3,8 @@
 ## Execution Environment
 
 Assume:
-- Google Colab CPU
+- Google Colab
 - Python 3.10
-- No GPU
-- No external credentials
 - No private network access
 
 ## Allowed Libraries
@@ -17,9 +15,12 @@ Prefer:
 - random
 - math
 - matplotlib
+- TensorFlow/Keras
 
 Avoid:
-- Large ML frameworks unless absolutely necessary
+- PyTorch
+- Databricks
+- Closed source packages
 - Cutting-edge Python features
 
 ## Reproducibility Rules
