@@ -15,7 +15,6 @@
 - [ ] Notebook runs top-to-bottom
 - [ ] Results align qualitatively with paper
 - [ ] Plots are interpretable
-- [ ] No GPU required
 - [ ] Summary explains intuition
 
 ## Red Flags

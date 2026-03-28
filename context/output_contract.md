@@ -14,9 +14,10 @@ A delivery is correct ONLY if all conditions are met.
 3. Reward / scoring function
 4. Baseline algorithm
 5. Paper’s main algorithm(s)
-6. Full experiment loop
-7. Visualizations
-8. Summary & next steps
+6. Training
+7. Full experiment loop
+8. Visualizations
+9. Summary & next steps
 
 ## Observability Requirements
 
