@@ -2,7 +2,7 @@
 
 ## Cell 0 – Title
 - Paper title
-- Citation
+- Some citation
 - What this notebook teaches
 
 ## Cell 1 – Setup
@@ -15,7 +15,7 @@
 - Why it matters
 
 ## Cell 3 – Dataset
-- Synthetic data generation
+- Synthetic data demos
 - Print 5 examples
 
 ## Cell 4 – Reward / Metric
