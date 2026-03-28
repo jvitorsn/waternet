@@ -1,6 +1,6 @@
 # Skill: Research Paper → Toy Implementation
 
-This skill transforms academic research papers into executable,
+This skill transforms academic research .tex text into executable,
 pedagogical Jupyter notebooks.
 
 The goal is to help building notebooks based on descriptions defined by premisses from in-progress academic papers.
