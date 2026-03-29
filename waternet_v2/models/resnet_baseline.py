@@ -16,8 +16,8 @@ Reference: He et al., "Deep Residual Learning for Image Recognition", CVPR 2016.
 from __future__ import annotations
 
 import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers
+import keras
+from keras import layers
 
 
 def build_resnet50_altitude_model(

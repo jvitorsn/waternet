@@ -13,7 +13,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import numpy as np
-from tensorflow.keras import callbacks
+from keras import callbacks
 
 
 # --------------------------------------------------------------------------- #

@@ -9,7 +9,7 @@ ClampedLinear
 from __future__ import annotations
 
 import tensorflow as tf
-from tensorflow.keras import layers
+from keras import layers
 
 
 class ClampedLinear(layers.Layer):

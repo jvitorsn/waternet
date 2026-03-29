@@ -6,14 +6,13 @@ Version: 1.0.0
 """
 
 import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers, models, optimizers, callbacks
-from tensorflow.keras.layers import (Conv2D, MaxPooling2D, Dense, Dropout, 
-                                     Flatten, Input, concatenate, Lambda)
+import keras
+from keras import layers, callbacks
+from keras.layers import (Conv2D, MaxPooling2D, Dense, Dropout, 
+                                    Flatten, Input, concatenate)
 import numpy as np
 import pandas as pd
 import cv2
-import json
 import logging
 from pathlib import Path
 from typing import Dict, Tuple, Optional, List

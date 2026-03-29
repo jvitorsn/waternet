@@ -24,8 +24,8 @@ Reference: Wolf et al. (DAFT, 2022) for advanced intermediate fusion if needed.
 from __future__ import annotations
 
 import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers
+import keras
+from keras import layers
 
 from waternet_v2.models.layers import ClampedLinear
 
