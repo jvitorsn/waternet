@@ -33,7 +33,7 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 from sklearn.preprocessing import StandardScaler
-from tensorflow import keras
+import keras
 
 from waternet_v2.configs import load_config
 from waternet_v2.data.augmentation import WaterAugmenter
@@ -162,7 +162,8 @@ def run_training_pipeline(
         ``splits`` (dict of DataFrames), ``config``.
     """
     # ── Setup ────────────────────────────────────────────────────────────── #
-    import os, random
+    import os
+    import random
     random.seed(seed)
     np.random.seed(seed)
     tf.random.set_seed(seed)

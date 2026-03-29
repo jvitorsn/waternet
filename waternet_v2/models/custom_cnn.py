@@ -14,12 +14,10 @@ an ablation baseline compared to ResNet50 transfer learning.
 
 from __future__ import annotations
 
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers
+import keras
+from keras import layers
 
 from waternet_v2.models.layers import ClampedLinear
-
 
 def build_custom_cnn(
     input_shape: tuple[int, int, int] = (224, 224, 1),

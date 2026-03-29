@@ -26,7 +26,7 @@ from __future__ import annotations
 import numpy as np
 import tensorflow as tf
 import cv2
-from tensorflow import keras
+import keras
 
 
 def compute_gradcam(
@@ -54,7 +54,7 @@ def compute_gradcam(
         ValueError: If the named layer is not found in the model.
     """
     # Validate layer name
-    layer_names = [l.name for l in model.layers]
+    layer_names = [layer.name for layer in model.layers]
     if last_conv_layer_name not in layer_names:
         raise ValueError(
             f"Layer '{last_conv_layer_name}' not found. "

@@ -21,7 +21,6 @@ from __future__ import annotations
 
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
 import seaborn as sns
 from matplotlib.figure import Figure
 from scipy import stats
@@ -252,7 +251,6 @@ def plot_model_comparison(
     Returns:
         ``matplotlib.figure.Figure``.
     """
-    import pandas as pd
 
     if metrics is None:
         metrics = ["MAE (cm)", "RMSE (cm)"]
@@ -379,7 +377,6 @@ def plot_gradcam_overlay(
     Returns:
         ``matplotlib.figure.Figure``.
     """
-    import cv2 as _cv2
 
     fig, axes = plt.subplots(1, 3, figsize=(12, 4))
 
