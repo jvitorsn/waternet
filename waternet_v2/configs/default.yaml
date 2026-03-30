@@ -9,7 +9,7 @@ project:
 
 data:
   image_dir: "samples/synth_samples"
-  csv_path: "samples/synth_water.csv"
+  csv_path: "samples/synth_samples.csv"
   image_size: [224, 224]       # [height, width] — resize target
   alt_min_cm: 50.0
   alt_max_cm: 800.0
