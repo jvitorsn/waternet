@@ -49,31 +49,31 @@ def create_hud_video(image_folder, df, output_filename='output_224.mp4', fps=60,
         canvas[:, :orig_w] = frame
         
         # Fetch data from dataframe based on filename
-        row = df[df['filename'] == img_name]
+        row = df.iloc[i]
+        #print(row)
         # HUD Text parameters
         font = cv2.FONT_HERSHEY_SIMPLEX
         font_scale = 0.5
         if not row.empty:
-            height_val = row.iloc[0]['height']
-            altitude_val = row.iloc[0]['altitude']
-            lidar_val = row.iloc[0]['lidar']
-            waternet_val = row.iloc[0]['waternet']
-            waternet_fus_val = row.iloc[0]['waternet_fus']
+            height_val = row['pred']
+            #altitude_val = row.iloc[0]['altitude']
+            #lidar_val = row.iloc[0]['lidar']
+            #waternet_val = row.iloc[0]['waternet']
+            #waternet_fus_val = row.iloc[0]['waternet_fus']
 
             color = (0, 255, 0) # Green text
             thickness = 1
 
             # Add text to the right side (the extended area)
-
         else:
             pass
 
         cv2.putText(canvas, "HUD Data", (orig_w + 10, 30), font, 0.6, (255, 255, 255), 2)
-        cv2.putText(canvas, f"Height: {height_val}", (orig_w + 10, 50), font, font_scale, color, thickness)
-        cv2.putText(canvas, f"Altitude: {altitude_val}", (orig_w + 10, 70), font, font_scale, color, thickness)
-        cv2.putText(canvas, f"Lidar: {lidar_val}", (orig_w + 10, 90), font, font_scale, color, thickness)
-        cv2.putText(canvas, f"WaterNet: {waternet_val}", (orig_w + 10, 110), font, font_scale, color, thickness)
-        cv2.putText(canvas, f"WaterNet_Fus: {waternet_fus_val}", (orig_w + 10, 130), font, font_scale, color, thickness)
+        cv2.putText(canvas, f"WaterNet: {height_val}", (orig_w + 10, 50), font, font_scale, color, thickness)
+        #cv2.putText(canvas, f"Altitude: {altitude_val}", (orig_w + 10, 70), font, font_scale, color, thickness)
+        #cv2.putText(canvas, f"Lidar: {lidar_val}", (orig_w + 10, 90), font, font_scale, color, thickness)
+        #cv2.putText(canvas, f"WaterNet: {waternet_val}", (orig_w + 10, 110), font, font_scale, color, thickness)
+        #cv2.putText(canvas, f"WaterNet_Fus: {waternet_fus_val}", (orig_w + 10, 130), font, font_scale, color, thickness)
 
         # Write the modified frame to the video
         out.write(canvas)
@@ -84,10 +84,10 @@ def create_hud_video(image_folder, df, output_filename='output_224.mp4', fps=60,
     out.release()
     print(f"Video saved successfully to {output_filename}")
 
-df = pd.read_csv('./samples/section1/waternet_video.csv', sep=',')
+df = pd.read_csv('./samples/cabedelo0/waternet_pred_ordered.csv', sep=';')
 df.head()
 
-img_folder = './samples/section1/section1_224'
+img_folder = './samples/cabedelo0/measured/050/'
 
 create_hud_video(
     image_folder=img_folder,

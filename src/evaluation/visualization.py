@@ -158,7 +158,7 @@ def plot_training_curves(
 def plot_all_models_training_curves(
     models_dir: str | Path = "models",
     metrics: list[tuple[str, str]] | None = None,
-    save_path: str | Path | None = None,
+    save_path: str | Path = 'one_all_training_curves.png',
 ) -> Figure:
     """Plot training curves for every model found under *models_dir*.
 
