@@ -19,26 +19,33 @@ PALETTE = sns.color_palette('tab10')
 df = pd.read_csv(CSV_PATH)
 df['gt_fus'] = (df['height'] + df['altitude']) / 2
 
-models_bu = ['resnet50', 'resnet50_fus', 'waternet', 'waternet_fus_lt', 'lidar']
-labels_bu = ['ResNet50', 'RN50-Fus', 'WaterNet', 'WN-FusLT', 'LiDAR']
-
-models = ['resnet50', 'resnet50_fus', 'lidar']
-labels = ['ResNet50', 'RN50-Fus', 'LiDAR']
+models = ['resnet50', 'resnet50_fus', 'waternet', 'waternet_fus_lt', 'lidar']
+labels = ['ResNet50', 'RN50-Fus', 'WaterNet', 'WN-FusLT', 'LiDAR']
 gt = df['gt_fus']
 
 # ── Metrics ───────────────────────────────────────────────────────────────────
 records = []
+ratio = lambda y_pred: np.maximum(y_pred / (gt + 1e-8), gt / (y_pred + 1e-8))
 for m, lbl in zip(models, labels):
     err = df[m] - gt
     records.append({
         'Model': lbl,
-        'MAE':   round(err.abs().mean(), 3),
-        'RMSE':  round(np.sqrt((err**2).mean()), 3),
-        'Bias':  round(err.mean(), 3),
+        'MAE (m)':   round(err.abs().mean(), 3),
+        'RMSE (m)':  round(np.sqrt((err**2).mean()), 3),
+        'Bias (m)':  round(err.mean(), 3),
         'R2':    round(1 - np.sum(err**2) / np.sum((gt - gt.mean())**2), 3),
+        'MAPE (%)': round((err.abs() / gt.abs()).mean() * 100, 2),
+        'MedianAE (m)': round(err.abs().median(), 3),
+        'P95 Error (m)': round(np.percentile(err.abs(), 95), 3),
+        'Max error (m)': round(err.abs().max(), 3),
+        'Error std (m)': round(err.std(), 3)
     })
 metrics_df = pd.DataFrame(records)
+metrics_df.to_csv(OUTPUT_PATH + 'model_metrics.csv', index=False)
 print(metrics_df.to_string(index=False))
+
+while True:
+    pass
 
 # ── Chart 1: Grouped bar – MAE & RMSE ─────────────────────────────────────────
 fig1, ax1 = plt.subplots(figsize=(8, 5))
