@@ -1,0 +1,73 @@
+# WaterNet v2 — Default Configuration
+# All hyperparameters live here; never hardcode in source files.
+# Load with: from waternet_v2.configs import load_config
+
+project:
+  name: waternet_v2
+  version: "2.0.0"
+  seed: 42
+
+data:
+  image_dir: "/content/synth_samples/"
+  csv_path: "/content/synth_samples.csv"
+  image_size: [224, 224]       # [height, width] — resize target
+  alt_min_cm: 50.0
+  alt_max_cm: 800.0
+  # 70 / 15 / 15 stratified split
+  test_size: 0.15
+  val_size: 0.176              # 0.176 × 0.85 ≈ 0.15 of total
+  n_bins_stratify: 21          # altitude bins used for stratification
+
+features:
+  n_features: 12               # length of handcrafted feature vector
+  # [mean_v, std_v, skew_v, kurt_v,
+  #  fft_energy_low, fft_energy_mid, fft_energy_high,
+  #  grad_mean, grad_std, entropy,
+  #  shi_tomasi_count, local_std_mean]
+
+training:
+  batch_size: 128
+  epochs: 100
+  learning_rate: 1.0e-3
+  weight_decay: 0.01
+  clip_norm: 1.0
+  # Huber loss delta
+  huber_delta: 1.0
+  # EarlyStopping
+  patience: 5
+  # ReduceLROnPlateau
+  lr_factor: 0.5
+  lr_patience: 3
+  lr_min: 1.0e-7
+  # Checkpoint directory
+  checkpoint_dir: "checkpoints"
+  log_dir: "logs"
+
+# Fine-tuning stages for ResNet50 backbone
+finetune:
+  stage1_epochs: 12    # frozen backbone, train head only
+  stage1_lr: 1.0e-3
+  stage2_epochs: 18    # unfreeze conv5_x
+  stage2_lr_backbone: 1.0e-5
+  stage2_lr_head: 1.0e-4
+  stage3_epochs: 10    # unfreeze conv4_x (optional)
+  stage3_lr_backbone: 1.0e-6
+  stage3_lr_head: 5.0e-5
+
+augmentation:
+  horizontal_flip: true
+  vertical_flip: true
+  rotation_factor: 1.0         # full 360 degrees
+  brightness_factor: 0.15
+  contrast_factor: 0.15
+  gaussian_noise_stddev: 0.02
+  gamma_range: [0.7, 1.3]
+  blur_prob: 0.3
+
+calibration:
+  n_bins: 30
+  min_bin_samples: 10
+  spline_smoothing: 0.1
+
+evaluation:
+  altitude_bins: [50, 100, 200, 300, 400, 500, 600, 700, 800]
