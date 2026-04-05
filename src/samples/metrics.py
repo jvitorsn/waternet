@@ -22,8 +22,8 @@ df['gt_fus'] = (df['height'] + df['altitude']) / 2
 models_bu = ['resnet50', 'resnet50_fus', 'waternet', 'waternet_fus_lt', 'lidar']
 labels_bu = ['ResNet50', 'RN50-Fus', 'WaterNet', 'WN-FusLT', 'LiDAR']
 
-models = ['waternet', 'waternet_fus_lt', 'lidar']
-labels = ['WaterNet', 'WN-FusLT', 'LiDAR']
+models = ['resnet50', 'resnet50_fus', 'lidar']
+labels = ['ResNet50', 'RN50-Fus', 'LiDAR']
 gt = df['gt_fus']
 
 # ── Metrics ───────────────────────────────────────────────────────────────────
