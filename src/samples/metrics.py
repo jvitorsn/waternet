@@ -47,6 +47,54 @@ print(metrics_df.to_string(index=False))
 while True:
     pass
 
+# ── Metrics with bining ───────────────────────────────────────────────────────
+def evaluate_by_altitude_range(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    bins=None,
+) -> pd.DataFrame:
+    """Compute metrics stratified by altitude range.
+
+    Reveals where the model fails (e.g., systematic underestimation at
+    low altitudes where specular reflections are most dense).
+
+    Args:
+        y_true: Ground-truth altitudes in cm.
+        y_pred: Predicted altitudes in cm.
+        bins: Altitude bin edges in cm. Defaults to
+            [50, 100, 200, 300, 400, 500, 600, 700, 800].
+
+    Returns:
+        DataFrame with one row per altitude range and columns:
+        range, n_samples, mae, rmse, mape, median_error, p95_error, r2.
+    """
+    if bins is None:
+        bins = [50, 100, 200, 300, 400, 500, 600, 700, 800]
+
+    y_true = np.asarray(y_true, dtype=np.float64).ravel()
+    y_pred = np.asarray(y_pred, dtype=np.float64).ravel()
+
+    rows = []
+    for lo, hi in zip(bins[:-1], bins[1:]):
+        mask = (y_true >= lo) & (y_true < hi)
+        if not mask.any():
+            continue
+        yt, yp = y_true[mask], y_pred[mask]
+        abs_err = np.abs(yt - yp)
+        rows.append({
+            "range (cm)": f"{lo}–{hi}",
+            "n_samples":  int(mask.sum()),
+            "MAE":        float(mean_absolute_error(yt, yp)),
+            "RMSE":       float(np.sqrt(mean_squared_error(yt, yp))),
+            "MAPE (%)":   float(mean_absolute_percentage_error(yt, yp) * 100),
+            "MedAE":      float(np.median(abs_err)),
+            "P95 Error":  float(np.percentile(abs_err, 95)),
+            "R²":         float(r2_score(yt, yp)),
+        })
+
+    return pd.DataFrame(rows)
+
+
 # ── Chart 1: Grouped bar – MAE & RMSE ─────────────────────────────────────────
 fig1, ax1 = plt.subplots(figsize=(8, 5))
 bar_df = metrics_df.melt(
