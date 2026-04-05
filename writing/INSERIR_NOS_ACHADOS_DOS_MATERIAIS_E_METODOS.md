@@ -10,6 +10,7 @@
 6. NOT NECESSARY FURTHER DATA AUGMENTATION, check the random gamma for sun simulation
 == Results ==
 7. Bias calibration
+8. Future analysis with Grad-CAM
 
 # Challenges
 - Find the DC level
