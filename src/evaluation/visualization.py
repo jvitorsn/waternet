@@ -19,6 +19,10 @@ Also includes:
 
 from __future__ import annotations
 
+import json
+import re
+from pathlib import Path
+
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -37,6 +41,68 @@ plt.rcParams.update(
 
 _PALETTE = "muted"
 _FIGSIZE = (8, 6)
+
+
+# --------------------------------------------------------------------------- #
+# Helpers for loading training logs
+# --------------------------------------------------------------------------- #
+
+_EPOCH_LINE_RE = re.compile(
+    r"Epoch\s+\d+\s+"
+    r"loss=(?P<loss>[\d.]+)\s+"
+    r"mae=(?P<mae>[\d.]+)\s+"
+    r"rmse=(?P<rmse>[\d.]+)\s+"
+    r"val_loss=(?P<val_loss>[\d.]+)\s+"
+    r"val_mae=(?P<val_mae>[\d.]+)\s+"
+    r"val_rmse=(?P<val_rmse>[\d.]+)\s+"
+    r"learning_rate=(?P<learning_rate>[\d.eE+-]+)"
+)
+
+
+def _parse_txt_log(log_path: Path) -> dict[str, list[float]]:
+    """Extract per-epoch metrics from a ``log.txt`` file."""
+    history: dict[str, list[float]] = {
+        k: [] for k in ("loss", "mae", "rmse", "val_loss", "val_mae", "val_rmse", "learning_rate")
+    }
+    with open(log_path, encoding="utf-8") as fh:
+        for line in fh:
+            m = _EPOCH_LINE_RE.search(line)
+            if m:
+                for key, val in m.groupdict().items():
+                    history[key].append(float(val))
+    if not history["loss"]:
+        raise ValueError(f"No epoch metric lines found in {log_path}")
+    return history
+
+
+def load_training_history(model_dir: str | Path) -> dict[str, list[float]]:
+    """Load training history for a model directory.
+
+    Looks for ``training_history.json`` first; if absent, parses the first
+    ``*.txt`` log file found in the directory.
+
+    Args:
+        model_dir: Path to a model subdirectory (e.g. ``models/resnet50``).
+
+    Returns:
+        Dict mapping metric name to list of per-epoch float values.
+
+    Raises:
+        FileNotFoundError: If neither a JSON history nor a txt log is found.
+    """
+    model_dir = Path(model_dir)
+    json_path = model_dir / "training_history.json"
+    if json_path.exists():
+        with open(json_path, encoding="utf-8") as fh:
+            return json.load(fh)
+
+    txt_logs = sorted(model_dir.glob("*.txt"))
+    if txt_logs:
+        return _parse_txt_log(txt_logs[0])
+
+    raise FileNotFoundError(
+        f"No training_history.json or *.txt log found in {model_dir}"
+    )
 
 
 # --------------------------------------------------------------------------- #
@@ -86,6 +152,93 @@ def plot_training_curves(
     axes[1].legend()
 
     fig.tight_layout()
+    return fig
+
+
+def plot_all_models_training_curves(
+    models_dir: str | Path = "models",
+    metrics: list[tuple[str, str]] | None = None,
+    save_path: str | Path | None = None,
+) -> Figure:
+    """Plot training curves for every model found under *models_dir*.
+
+    Each row corresponds to one model; columns correspond to metrics.
+    Both the training and validation series are shown on each subplot.
+
+    Args:
+        models_dir: Root directory that contains one subdirectory per model.
+        metrics: List of ``(train_key, val_key)`` pairs to plot as columns.
+            Defaults to ``[("loss", "val_loss"), ("rmse", "val_rmse")]``.
+        save_path: If given, the figure is saved to this path before returning.
+
+    Returns:
+        ``matplotlib.figure.Figure`` with shape (n_models × n_metrics).
+    """
+    if metrics is None:
+        metrics = [("loss", "val_loss"), ("rmse", "val_rmse")]
+
+    models_dir = Path(models_dir)
+    model_dirs = sorted(
+        d for d in models_dir.iterdir()
+        if d.is_dir() and not d.name.startswith(".")
+    )
+    if not model_dirs:
+        raise FileNotFoundError(f"No model subdirectories found in {models_dir}")
+
+    histories: list[tuple[str, dict]] = []
+    for d in model_dirs:
+        try:
+            history = load_training_history(d)
+            histories.append((d.name, history))
+        except (FileNotFoundError, ValueError):
+            continue
+
+    if not histories:
+        raise FileNotFoundError(
+            f"Could not load training history from any directory in {models_dir}"
+        )
+
+    n_models = len(histories)
+    n_metrics = len(metrics)
+    col_titles = [train_key.upper() for train_key, _ in metrics]
+
+    fig, axes = plt.subplots(
+        n_models, n_metrics,
+        figsize=(5 * n_metrics, 3.5 * n_models),
+        squeeze=False,
+    )
+    fig.suptitle("Training Curves — All Models", fontsize=14, y=1.01)
+
+    for row, (model_name, history) in enumerate(histories):
+        epochs = range(1, len(history.get("loss", history.get(metrics[0][0], []))) + 1)
+        for col, (train_key, val_key) in enumerate(metrics):
+            ax = axes[row][col]
+
+            rmse_key = "rmse" if "rmse" in history else "root_mean_squared_error"
+            val_rmse_key = "val_rmse" if "val_rmse" in history else "val_root_mean_squared_error"
+            actual_train_key = rmse_key if train_key == "rmse" else train_key
+            actual_val_key = val_rmse_key if val_key == "val_rmse" else val_key
+
+            if actual_train_key in history:
+                ax.plot(epochs, history[actual_train_key], lw=1.8, label="Train")
+            if actual_val_key in history:
+                ax.plot(
+                    epochs, history[actual_val_key],
+                    lw=1.8, linestyle="--", label="Val",
+                )
+
+            if row == 0:
+                ax.set_title(col_titles[col], fontsize=11)
+            if col == 0:
+                ax.set_ylabel(model_name.replace("_", "\n"), fontsize=9)
+            ax.set_xlabel("Epoch")
+            ax.legend(fontsize=8)
+
+    fig.tight_layout()
+
+    if save_path is not None:
+        fig.savefig(save_path, dpi=200, bbox_inches="tight")
+
     return fig
 
 
