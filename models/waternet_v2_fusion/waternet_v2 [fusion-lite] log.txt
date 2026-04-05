@@ -1,0 +1,297 @@
+[Pipeline] Model type : waternet_fusion_lite
+[Pipeline] Image size : (224, 224)
+[Pipeline] Output dir : /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite
+[Pipeline] Dataset loaded: 10,517 rows
+[Split]  train=7,365  val=1,574  test=1,578  total=10,517
+[Scaler]   mean=288.1 cm  std=225.3 cm
+
+Model: "WaterNet_Fusion_lite"
+┏━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┓
+┃ Layer (type)        ┃ Output Shape      ┃    Param # ┃ Connected to      ┃
+┡━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
+│ image_input         │ (None, 224, 224,  │          0 │ -                 │
+│ (InputLayer)        │ 1)                │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ img_conv0_a         │ (None, 224, 224,  │        320 │ image_input[0][0] │
+│ (Conv2D)            │ 32)               │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ img_conv0_b         │ (None, 224, 224,  │      9,248 │ img_conv0_a[0][0] │
+│ (Conv2D)            │ 32)               │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ img_pool0           │ (None, 112, 112,  │          0 │ img_conv0_b[0][0] │
+│ (MaxPooling2D)      │ 32)               │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ img_conv1_a         │ (None, 112, 112,  │     18,496 │ img_pool0[0][0]   │
+│ (Conv2D)            │ 64)               │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ img_conv1_b         │ (None, 112, 112,  │     36,928 │ img_conv1_a[0][0] │
+│ (Conv2D)            │ 64)               │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ img_pool1           │ (None, 56, 56,    │          0 │ img_conv1_b[0][0] │
+│ (MaxPooling2D)      │ 64)               │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ img_conv2_a         │ (None, 56, 56,    │     73,856 │ img_pool1[0][0]   │
+│ (Conv2D)            │ 128)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ img_conv2_b         │ (None, 56, 56,    │    147,584 │ img_conv2_a[0][0] │
+│ (Conv2D)            │ 128)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ img_pool2           │ (None, 28, 28,    │          0 │ img_conv2_b[0][0] │
+│ (MaxPooling2D)      │ 128)              │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ feature_input       │ (None, 12)        │          0 │ -                 │
+│ (InputLayer)        │                   │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ img_gap             │ (None, 128)       │          0 │ img_pool2[0][0]   │
+│ (GlobalAveragePool… │                   │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ feat_dense0 (Dense) │ (None, 64)        │        832 │ feature_input[0]… │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ img_embedding       │ (None, 64)        │      8,256 │ img_gap[0][0]     │
+│ (Dense)             │                   │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ feat_dense1 (Dense) │ (None, 32)        │      2,080 │ feat_dense0[0][0] │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ fusion              │ (None, 96)        │          0 │ img_embedding[0]… │
+│ (Concatenate)       │                   │            │ feat_dense1[0][0] │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ fusion_dense        │ (None, 128)       │     12,416 │ fusion[0][0]      │
+│ (Dense)             │                   │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ fusion_dropout      │ (None, 128)       │          0 │ fusion_dense[0][… │
+│ (Dropout)           │                   │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ output (Dense)      │ (None, 1)         │        129 │ fusion_dropout[0… │
+└─────────────────────┴───────────────────┴────────────┴───────────────────┘
+ Total params: 310,145 (1.18 MB)
+ Trainable params: 310,145 (1.18 MB)
+ Non-trainable params: 0 (0.00 B)
+
+[Compile] lr=0.001  weight_decay=0.01  huber_delta=1.0
+[Compile] Trainable params: 310,145
+Epoch 1/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.6382 - mae: 1.0191 - rmse: 1.3600
+Epoch 1: val_loss improved from None to 0.17453, saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_01_valloss0.1745.keras
+
+Epoch 1: finished saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_01_valloss0.1745.keras
+Epoch 001  loss=0.3929  mae=0.7307  rmse=1.0280  val_loss=0.1745  val_mae=0.4476  val_rmse=0.6178  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 286s 4s/step - loss: 0.3929 - mae: 0.7307 - rmse: 1.0280 - val_loss: 0.1745 - val_mae: 0.4476 - val_rmse: 0.6178 - learning_rate: 0.0010
+Epoch 2/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.1745 - mae: 0.4562 - rmse: 0.6104
+Epoch 2: val_loss improved from 0.17453 to 0.12081, saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_02_valloss0.1208.keras
+
+Epoch 2: finished saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_02_valloss0.1208.keras
+Epoch 002  loss=0.1549  mae=0.4261  rmse=0.5720  val_loss=0.1208  val_mae=0.3425  val_rmse=0.5040  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 207s 4s/step - loss: 0.1549 - mae: 0.4261 - rmse: 0.5720 - val_loss: 0.1208 - val_mae: 0.3425 - val_rmse: 0.5040 - learning_rate: 0.0010
+Epoch 3/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.1205 - mae: 0.3681 - rmse: 0.4982
+Epoch 3: val_loss improved from 0.12081 to 0.08833, saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_03_valloss0.0883.keras
+
+Epoch 3: finished saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_03_valloss0.0883.keras
+Epoch 003  loss=0.1146  mae=0.3586  rmse=0.4853  val_loss=0.0883  val_mae=0.3071  val_rmse=0.4241  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 207s 4s/step - loss: 0.1146 - mae: 0.3586 - rmse: 0.4853 - val_loss: 0.0883 - val_mae: 0.3071 - val_rmse: 0.4241 - learning_rate: 0.0010
+Epoch 4/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0991 - mae: 0.3311 - rmse: 0.4492
+Epoch 4: val_loss did not improve from 0.08833
+Epoch 004  loss=0.1021  mae=0.3346  rmse=0.4577  val_loss=0.0931  val_mae=0.3041  val_rmse=0.4365  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 207s 4s/step - loss: 0.1021 - mae: 0.3346 - rmse: 0.4577 - val_loss: 0.0931 - val_mae: 0.3041 - val_rmse: 0.4365 - learning_rate: 0.0010
+Epoch 5/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.1020 - mae: 0.3310 - rmse: 0.4580
+Epoch 5: val_loss improved from 0.08833 to 0.08227, saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_05_valloss0.0823.keras
+
+Epoch 5: finished saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_05_valloss0.0823.keras
+Epoch 005  loss=0.0957  mae=0.3209  rmse=0.4429  val_loss=0.0823  val_mae=0.2861  val_rmse=0.4104  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 209s 4s/step - loss: 0.0957 - mae: 0.3209 - rmse: 0.4429 - val_loss: 0.0823 - val_mae: 0.2861 - val_rmse: 0.4104 - learning_rate: 0.0010
+Epoch 6/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0840 - mae: 0.2997 - rmse: 0.4136
+Epoch 6: val_loss improved from 0.08227 to 0.07546, saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_06_valloss0.0755.keras
+
+Epoch 6: finished saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_06_valloss0.0755.keras
+Epoch 006  loss=0.0836  mae=0.2977  rmse=0.4131  val_loss=0.0755  val_mae=0.2712  val_rmse=0.3921  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 207s 4s/step - loss: 0.0836 - mae: 0.2977 - rmse: 0.4131 - val_loss: 0.0755 - val_mae: 0.2712 - val_rmse: 0.3921 - learning_rate: 0.0010
+Epoch 7/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0811 - mae: 0.2902 - rmse: 0.4068
+Epoch 7: val_loss did not improve from 0.07546
+Epoch 007  loss=0.0818  mae=0.2923  rmse=0.4087  val_loss=0.0822  val_mae=0.2848  val_rmse=0.4093  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 207s 4s/step - loss: 0.0818 - mae: 0.2923 - rmse: 0.4087 - val_loss: 0.0822 - val_mae: 0.2848 - val_rmse: 0.4093 - learning_rate: 0.0010
+Epoch 8/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0824 - mae: 0.2895 - rmse: 0.4094
+Epoch 8: val_loss improved from 0.07546 to 0.06993, saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_08_valloss0.0699.keras
+
+Epoch 8: finished saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_08_valloss0.0699.keras
+Epoch 008  loss=0.0801  mae=0.2876  rmse=0.4038  val_loss=0.0699  val_mae=0.2582  val_rmse=0.3774  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 207s 4s/step - loss: 0.0801 - mae: 0.2876 - rmse: 0.4038 - val_loss: 0.0699 - val_mae: 0.2582 - val_rmse: 0.3774 - learning_rate: 0.0010
+Epoch 9/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0777 - mae: 0.2836 - rmse: 0.3984
+Epoch 9: val_loss improved from 0.06993 to 0.06656, saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_09_valloss0.0666.keras
+
+Epoch 9: finished saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_09_valloss0.0666.keras
+Epoch 009  loss=0.0764  mae=0.2810  rmse=0.3952  val_loss=0.0666  val_mae=0.2551  val_rmse=0.3678  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 208s 4s/step - loss: 0.0764 - mae: 0.2810 - rmse: 0.3952 - val_loss: 0.0666 - val_mae: 0.2551 - val_rmse: 0.3678 - learning_rate: 0.0010
+Epoch 10/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0685 - mae: 0.2647 - rmse: 0.3726
+Epoch 10: val_loss improved from 0.06656 to 0.06249, saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_10_valloss0.0625.keras
+
+Epoch 10: finished saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_10_valloss0.0625.keras
+Epoch 010  loss=0.0702  mae=0.2698  rmse=0.3773  val_loss=0.0625  val_mae=0.2408  val_rmse=0.3568  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 209s 4s/step - loss: 0.0702 - mae: 0.2698 - rmse: 0.3773 - val_loss: 0.0625 - val_mae: 0.2408 - val_rmse: 0.3568 - learning_rate: 0.0010
+Epoch 11/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0660 - mae: 0.2599 - rmse: 0.3661
+Epoch 11: val_loss improved from 0.06249 to 0.05869, saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_11_valloss0.0587.keras
+
+Epoch 11: finished saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_11_valloss0.0587.keras
+Epoch 011  loss=0.0691  mae=0.2678  rmse=0.3747  val_loss=0.0587  val_mae=0.2389  val_rmse=0.3444  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 207s 4s/step - loss: 0.0691 - mae: 0.2678 - rmse: 0.3747 - val_loss: 0.0587 - val_mae: 0.2389 - val_rmse: 0.3444 - learning_rate: 0.0010
+Epoch 12/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0627 - mae: 0.2552 - rmse: 0.3555
+Epoch 12: val_loss improved from 0.05869 to 0.04938, saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_12_valloss0.0494.keras
+
+Epoch 12: finished saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_12_valloss0.0494.keras
+Epoch 012  loss=0.0594  mae=0.2484  rmse=0.3462  val_loss=0.0494  val_mae=0.2192  val_rmse=0.3157  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 207s 4s/step - loss: 0.0594 - mae: 0.2484 - rmse: 0.3462 - val_loss: 0.0494 - val_mae: 0.2192 - val_rmse: 0.3157 - learning_rate: 0.0010
+Epoch 13/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0612 - mae: 0.2510 - rmse: 0.3522
+Epoch 13: val_loss did not improve from 0.04938
+Epoch 013  loss=0.0588  mae=0.2478  rmse=0.3450  val_loss=0.0513  val_mae=0.2287  val_rmse=0.3216  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 207s 4s/step - loss: 0.0588 - mae: 0.2478 - rmse: 0.3450 - val_loss: 0.0513 - val_mae: 0.2287 - val_rmse: 0.3216 - learning_rate: 0.0010
+Epoch 14/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0543 - mae: 0.2370 - rmse: 0.3314
+Epoch 14: val_loss improved from 0.04938 to 0.04792, saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_14_valloss0.0479.keras
+
+Epoch 14: finished saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_14_valloss0.0479.keras
+Epoch 014  loss=0.0543  mae=0.2379  rmse=0.3312  val_loss=0.0479  val_mae=0.2141  val_rmse=0.3104  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 209s 4s/step - loss: 0.0543 - mae: 0.2379 - rmse: 0.3312 - val_loss: 0.0479 - val_mae: 0.2141 - val_rmse: 0.3104 - learning_rate: 0.0010
+Epoch 15/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0569 - mae: 0.2451 - rmse: 0.3397
+Epoch 15: val_loss did not improve from 0.04792
+Epoch 015  loss=0.0583  mae=0.2477  rmse=0.3434  val_loss=0.0496  val_mae=0.2275  val_rmse=0.3164  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 208s 4s/step - loss: 0.0583 - mae: 0.2477 - rmse: 0.3434 - val_loss: 0.0496 - val_mae: 0.2275 - val_rmse: 0.3164 - learning_rate: 0.0010
+Epoch 16/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0552 - mae: 0.2408 - rmse: 0.3342
+Epoch 16: val_loss improved from 0.04792 to 0.04717, saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_16_valloss0.0472.keras
+
+Epoch 16: finished saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_16_valloss0.0472.keras
+Epoch 016  loss=0.0557  mae=0.2411  rmse=0.3359  val_loss=0.0472  val_mae=0.2143  val_rmse=0.3081  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 208s 4s/step - loss: 0.0557 - mae: 0.2411 - rmse: 0.3359 - val_loss: 0.0472 - val_mae: 0.2143 - val_rmse: 0.3081 - learning_rate: 0.0010
+Epoch 17/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0492 - mae: 0.2288 - rmse: 0.3145
+Epoch 17: val_loss did not improve from 0.04717
+Epoch 017  loss=0.0532  mae=0.2355  rmse=0.3281  val_loss=0.0665  val_mae=0.2686  val_rmse=0.3669  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 207s 4s/step - loss: 0.0532 - mae: 0.2355 - rmse: 0.3281 - val_loss: 0.0665 - val_mae: 0.2686 - val_rmse: 0.3669 - learning_rate: 0.0010
+Epoch 18/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0582 - mae: 0.2451 - rmse: 0.3426
+Epoch 18: val_loss improved from 0.04717 to 0.04306, saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_18_valloss0.0431.keras
+
+Epoch 18: finished saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_18_valloss0.0431.keras
+Epoch 018  loss=0.0558  mae=0.2392  rmse=0.3358  val_loss=0.0431  val_mae=0.2027  val_rmse=0.2937  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 207s 4s/step - loss: 0.0558 - mae: 0.2392 - rmse: 0.3358 - val_loss: 0.0431 - val_mae: 0.2027 - val_rmse: 0.2937 - learning_rate: 0.0010
+Epoch 19/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0457 - mae: 0.2157 - rmse: 0.3033
+Epoch 19: val_loss did not improve from 0.04306
+Epoch 019  loss=0.0484  mae=0.2219  rmse=0.3126  val_loss=0.0523  val_mae=0.2225  val_rmse=0.3238  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 207s 4s/step - loss: 0.0484 - mae: 0.2219 - rmse: 0.3126 - val_loss: 0.0523 - val_mae: 0.2225 - val_rmse: 0.3238 - learning_rate: 0.0010
+Epoch 20/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0516 - mae: 0.2291 - rmse: 0.3221
+Epoch 20: val_loss did not improve from 0.04306
+Epoch 020  loss=0.0472  mae=0.2194  rmse=0.3082  val_loss=0.0564  val_mae=0.2285  val_rmse=0.3362  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 208s 4s/step - loss: 0.0472 - mae: 0.2194 - rmse: 0.3082 - val_loss: 0.0564 - val_mae: 0.2285 - val_rmse: 0.3362 - learning_rate: 0.0010
+Epoch 21/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0463 - mae: 0.2154 - rmse: 0.3054
+Epoch 21: val_loss improved from 0.04306 to 0.04171, saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_21_valloss0.0417.keras
+
+Epoch 21: finished saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_21_valloss0.0417.keras
+Epoch 021  loss=0.0454  mae=0.2155  rmse=0.3022  val_loss=0.0417  val_mae=0.2058  val_rmse=0.2902  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 206s 4s/step - loss: 0.0454 - mae: 0.2155 - rmse: 0.3022 - val_loss: 0.0417 - val_mae: 0.2058 - val_rmse: 0.2902 - learning_rate: 0.0010
+Epoch 22/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0406 - mae: 0.2063 - rmse: 0.2854
+Epoch 22: val_loss improved from 0.04171 to 0.03275, saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_22_valloss0.0327.keras
+
+Epoch 22: finished saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_22_valloss0.0327.keras
+Epoch 022  loss=0.0435  mae=0.2134  rmse=0.2957  val_loss=0.0327  val_mae=0.1737  val_rmse=0.2559  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 211s 4s/step - loss: 0.0435 - mae: 0.2134 - rmse: 0.2957 - val_loss: 0.0327 - val_mae: 0.1737 - val_rmse: 0.2559 - learning_rate: 0.0010
+Epoch 23/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0453 - mae: 0.2156 - rmse: 0.3018
+Epoch 23: val_loss did not improve from 0.03275
+Epoch 023  loss=0.0456  mae=0.2163  rmse=0.3027  val_loss=0.0550  val_mae=0.2242  val_rmse=0.3338  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 208s 4s/step - loss: 0.0456 - mae: 0.2163 - rmse: 0.3027 - val_loss: 0.0550 - val_mae: 0.2242 - val_rmse: 0.3338 - learning_rate: 0.0010
+Epoch 24/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0412 - mae: 0.2073 - rmse: 0.2870
+Epoch 24: val_loss improved from 0.03275 to 0.03092, saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_24_valloss0.0309.keras
+
+Epoch 24: finished saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_24_valloss0.0309.keras
+Epoch 024  loss=0.0404  mae=0.2054  rmse=0.2848  val_loss=0.0309  val_mae=0.1681  val_rmse=0.2491  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 207s 4s/step - loss: 0.0404 - mae: 0.2054 - rmse: 0.2848 - val_loss: 0.0309 - val_mae: 0.1681 - val_rmse: 0.2491 - learning_rate: 0.0010
+Epoch 25/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0428 - mae: 0.2120 - rmse: 0.2932
+Epoch 25: val_loss did not improve from 0.03092
+Epoch 025  loss=0.0402  mae=0.2069  rmse=0.2839  val_loss=0.0342  val_mae=0.1791  val_rmse=0.2619  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 207s 4s/step - loss: 0.0402 - mae: 0.2069 - rmse: 0.2839 - val_loss: 0.0342 - val_mae: 0.1791 - val_rmse: 0.2619 - learning_rate: 0.0010
+Epoch 26/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0416 - mae: 0.2064 - rmse: 0.2888
+Epoch 26: val_loss did not improve from 0.03092
+Epoch 026  loss=0.0406  mae=0.2049  rmse=0.2853  val_loss=0.0350  val_mae=0.1804  val_rmse=0.2647  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 209s 4s/step - loss: 0.0406 - mae: 0.2049 - rmse: 0.2853 - val_loss: 0.0350 - val_mae: 0.1804 - val_rmse: 0.2647 - learning_rate: 0.0010
+Epoch 27/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0385 - mae: 0.2003 - rmse: 0.2777
+Epoch 27: val_loss improved from 0.03092 to 0.02706, saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_27_valloss0.0271.keras
+
+Epoch 27: finished saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_27_valloss0.0271.keras
+Epoch 027  loss=0.0389  mae=0.2007  rmse=0.2794  val_loss=0.0271  val_mae=0.1607  val_rmse=0.2326  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 207s 4s/step - loss: 0.0389 - mae: 0.2007 - rmse: 0.2794 - val_loss: 0.0271 - val_mae: 0.1607 - val_rmse: 0.2326 - learning_rate: 0.0010
+Epoch 28/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0350 - mae: 0.1932 - rmse: 0.2652
+Epoch 28: val_loss improved from 0.02706 to 0.02644, saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_28_valloss0.0264.keras
+
+Epoch 28: finished saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_28_valloss0.0264.keras
+Epoch 028  loss=0.0354  mae=0.1934  rmse=0.2668  val_loss=0.0264  val_mae=0.1572  val_rmse=0.2300  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 207s 4s/step - loss: 0.0354 - mae: 0.1934 - rmse: 0.2668 - val_loss: 0.0264 - val_mae: 0.1572 - val_rmse: 0.2300 - learning_rate: 0.0010
+Epoch 29/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0343 - mae: 0.1895 - rmse: 0.2619
+Epoch 29: val_loss did not improve from 0.02644
+Epoch 029  loss=0.0350  mae=0.1910  rmse=0.2649  val_loss=0.0411  val_mae=0.1973  val_rmse=0.2866  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 206s 4s/step - loss: 0.0350 - mae: 0.1910 - rmse: 0.2649 - val_loss: 0.0411 - val_mae: 0.1973 - val_rmse: 0.2866 - learning_rate: 0.0010
+Epoch 30/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0392 - mae: 0.2022 - rmse: 0.2801
+Epoch 30: val_loss did not improve from 0.02644
+Epoch 030  loss=0.0369  mae=0.1952  rmse=0.2718  val_loss=0.0299  val_mae=0.1594  val_rmse=0.2449  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 206s 4s/step - loss: 0.0369 - mae: 0.1952 - rmse: 0.2718 - val_loss: 0.0299 - val_mae: 0.1594 - val_rmse: 0.2449 - learning_rate: 0.0010
+Epoch 31/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0362 - mae: 0.1954 - rmse: 0.2691
+Epoch 31: val_loss improved from 0.02644 to 0.02286, saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_31_valloss0.0229.keras
+
+Epoch 31: finished saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_31_valloss0.0229.keras
+Epoch 031  loss=0.0351  mae=0.1910  rmse=0.2654  val_loss=0.0229  val_mae=0.1494  val_rmse=0.2138  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 210s 4s/step - loss: 0.0351 - mae: 0.1910 - rmse: 0.2654 - val_loss: 0.0229 - val_mae: 0.1494 - val_rmse: 0.2138 - learning_rate: 0.0010
+Epoch 32/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0334 - mae: 0.1864 - rmse: 0.2587
+Epoch 32: val_loss did not improve from 0.02286
+Epoch 032  loss=0.0360  mae=0.1922  rmse=0.2687  val_loss=0.0293  val_mae=0.1646  val_rmse=0.2426  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 208s 4s/step - loss: 0.0360 - mae: 0.1922 - rmse: 0.2687 - val_loss: 0.0293 - val_mae: 0.1646 - val_rmse: 0.2426 - learning_rate: 0.0010
+Epoch 33/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0370 - mae: 0.1947 - rmse: 0.2722
+Epoch 33: val_loss did not improve from 0.02286
+Epoch 033  loss=0.0380  mae=0.1974  rmse=0.2762  val_loss=0.0317  val_mae=0.1676  val_rmse=0.2517  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 208s 4s/step - loss: 0.0380 - mae: 0.1974 - rmse: 0.2762 - val_loss: 0.0317 - val_mae: 0.1676 - val_rmse: 0.2517 - learning_rate: 0.0010
+Epoch 34/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0290 - mae: 0.1732 - rmse: 0.2407
+Epoch 34: val_loss did not improve from 0.02286
+
+Epoch 34: ReduceLROnPlateau reducing learning rate to 0.0005000000237487257.
+Epoch 034  loss=0.0315  mae=0.1808  rmse=0.2513  val_loss=0.0284  val_mae=0.1629  val_rmse=0.2386  learning_rate=0.0010
+58/58 ━━━━━━━━━━━━━━━━━━━━ 207s 4s/step - loss: 0.0315 - mae: 0.1808 - rmse: 0.2513 - val_loss: 0.0284 - val_mae: 0.1629 - val_rmse: 0.2386 - learning_rate: 0.0010
+Epoch 35/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0296 - mae: 0.1747 - rmse: 0.2435
+Epoch 35: val_loss improved from 0.02286 to 0.02173, saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_35_valloss0.0217.keras
+
+Epoch 35: finished saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_35_valloss0.0217.keras
+Epoch 035  loss=0.0289  mae=0.1738  rmse=0.2405  val_loss=0.0217  val_mae=0.1433  val_rmse=0.2086  learning_rate=0.0005
+58/58 ━━━━━━━━━━━━━━━━━━━━ 208s 4s/step - loss: 0.0289 - mae: 0.1738 - rmse: 0.2405 - val_loss: 0.0217 - val_mae: 0.1433 - val_rmse: 0.2086 - learning_rate: 5.0000e-04
+Epoch 36/100
+58/58 ━━━━━━━━━━━━━━━━━━━━ 0s 3s/step - loss: 0.0275 - mae: 0.1696 - rmse: 0.2345
+Epoch 36: val_loss improved from 0.02173 to 0.01907, saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_36_valloss0.0191.keras
+
+Epoch 36: finished saving model to /content/drive/MyDrive/agua/v2/waternet_fusion/run_lite/checkpoints/model_36_valloss0.0191.keras
+Epoch 036  loss=0.0271  mae=0.1685  rmse=0.2326  val_loss=0.0191  val_mae=0.1325  val_rmse=0.1953  learning_rate=0.0005
+58/58 ━━━━━━━━━━━━━━━━━━━━ 207s 4s/step - loss: 0.0271 - mae: 0.1685 - rmse: 0.2326 - val_loss: 0.0191 - val_mae: 0.1325 - val_rmse: 0.1953 - learning_rate: 5.0000e-04
+Epoch 37/100
+ 3/58 ━━━━━━━━━━━━━━━━━━━━ 2:48 3s/step - loss: 0.0249 - mae: 0.1648 - rmse: 0.2231
